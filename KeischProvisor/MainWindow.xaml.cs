@@ -28,8 +28,11 @@ namespace KeischProvisor
         public MainWindow()
         {
             InitializeComponent();
-            SetTitleBar(AppTitleBar);
             ExtendsContentIntoTitleBar = true;
+            AppWindow.TitleBar.PreferredHeightOption = Microsoft.UI.Windowing.TitleBarHeightOption.Standard;
+            SetTitleBar(AppTitleBar);
+
+            AppWindow.Resize(new Windows.Graphics.SizeInt32 { Width = 600, Height = 600 });
 
             ContentFrame.Navigate(typeof(Pages.MainPage));
         }
