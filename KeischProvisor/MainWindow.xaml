@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="KeischProvisor.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:KeischProvisor"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:pages="using:KeischProvisor.Pages"
+    mc:Ignorable="d"
+    Title="KeischProvisor">
+
+    <Window.SystemBackdrop>
+        <MicaBackdrop Kind="BaseAlt"/>
+    </Window.SystemBackdrop>
+
+    <Grid KeyboardAcceleratorPlacementMode="Hidden">
+
+        <Grid.KeyboardAccelerators>
+            <KeyboardAccelerator Key="Left" Modifiers="Menu" Invoked="KeyboardAccelerator_Invoked"/>
+            <KeyboardAccelerator Key="Right" Modifiers="Menu" Invoked="KeyboardAccelerator_Invoked"/>
+        </Grid.KeyboardAccelerators>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <!--Titlebar-->
+        <Grid
+            Grid.Row="0"
+            x:FieldModifier="public"
+            x:Name="AppTitleBar"
+            Height="40"
+            Margin="4,0,0,0"
+            VerticalAlignment="Top"
+            Padding="0"
+            >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Image
+                x:Name="AppFontIcon"
+                Width="16"
+                Height="16"
+                Margin="12 3 0 0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Source="/Assets/LockScreenLogo.png" />
+            <TextBlock
+                Margin="4,2,0,0"
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                FontSize="12"
+                Text="KeischProvisor"/>
+        </Grid>
+
+        <Frame Grid.Row="2" x:Name="ContentFrame" KeyboardAcceleratorPlacementMode="Hidden"/>
+    </Grid>
+</Window>

@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "KeischProvisor (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "KeischProvisor (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

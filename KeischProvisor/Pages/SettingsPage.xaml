@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="KeischProvisor.Pages.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:KeischProvisor.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:communitytoolkit="using:CommunityToolkit.WinUI.Controls"
+    xmlns:ui="using:CommunityToolkit.WinUI"
+    mc:Ignorable="d">
+
+    <Grid Margin="30">
+        <StackPanel>
+            <TextBlock Text="Settings" FontWeight="SemiBold" FontSize="40"></TextBlock>
+            <communitytoolkit:SettingsExpander
+                Header="App Theme"
+                HeaderIcon="{ui:FontIcon Glyph=&#xE790;}"
+                Description="Select which app theme to display">
+                <communitytoolkit:SettingsExpander.Items>
+                    <communitytoolkit:SettingsCard>
+                        <communitytoolkit:SettingsCard.Header>  
+                            <RadioButtons>
+                                <RadioButton></RadioButton>
+                                <RadioButton></RadioButton>
+                                <RadioButton></RadioButton>
+                            </RadioButtons>
+                        </communitytoolkit:SettingsCard.Header>
+                    </communitytoolkit:SettingsCard>
+                </communitytoolkit:SettingsExpander.Items>
+            </communitytoolkit:SettingsExpander>
+        </StackPanel>
+    </Grid>
+</Page>
