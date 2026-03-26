@@ -14,6 +14,8 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using System.Diagnostics;
+using KeischProvisor.Pages;
+using Microsoft.UI.System;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -29,16 +31,22 @@ namespace KeischProvisor
         {
             InitializeComponent();
             ExtendsContentIntoTitleBar = true;
-            AppWindow.TitleBar.PreferredHeightOption = Microsoft.UI.Windowing.TitleBarHeightOption.Standard;
             SetTitleBar(AppTitleBar);
-
-            AppWindow.Resize(new Windows.Graphics.SizeInt32 { Width = 600, Height = 600 });
-
-            ContentFrame.Navigate(typeof(Pages.MainPage));
+            RequestPageTransition(typeof(Pages.MainPage), null!, null!);
         }
 
         public void RequestPageTransition(Type sourcePageType, object parameter, NavigationTransitionInfo navigationTransitionInfo)
         {
+            if (sourcePageType == typeof(SettingsPage))
+            { 
+                AppTitleBar.IsBackButtonVisible = true;
+                ((MicaBackdrop)SystemBackdrop).Kind = Microsoft.UI.Composition.SystemBackdrops.MicaKind.Base;
+            }
+            else
+            { 
+                AppTitleBar.IsBackButtonVisible = false;
+                ((MicaBackdrop)SystemBackdrop).Kind = Microsoft.UI.Composition.SystemBackdrops.MicaKind.BaseAlt;
+            }
             ContentFrame.Navigate(sourcePageType, parameter, navigationTransitionInfo);
         }
 
@@ -86,6 +94,18 @@ namespace KeischProvisor
                 }
             }
 
+        }
+
+        private void AppTitleBar_BackRequested(TitleBar sender, object args)
+        {
+            if (ContentFrame.CanGoBack)
+            {
+                var lastPage = ContentFrame.BackStack.Last() ?? null;
+                if (lastPage != null)
+                {
+                    RequestPageTransition(lastPage.SourcePageType, null!, lastPage.NavigationTransitionInfo);
+                }
+            }
         }
     }
 }

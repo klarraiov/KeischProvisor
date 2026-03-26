@@ -20,10 +20,10 @@
                 <communitytoolkit:SettingsExpander.Items>
                     <communitytoolkit:SettingsCard>
                         <communitytoolkit:SettingsCard.Header>  
-                            <RadioButtons>
-                                <RadioButton></RadioButton>
-                                <RadioButton></RadioButton>
-                                <RadioButton></RadioButton>
+                            <RadioButtons Margin="0 -8 0 0" SelectionChanged="RadioButtons_SelectionChanged">
+                                <RadioButton>Light</RadioButton>
+                                <RadioButton>Dark</RadioButton>
+                                <RadioButton>Use system setting</RadioButton>
                             </RadioButtons>
                         </communitytoolkit:SettingsCard.Header>
                     </communitytoolkit:SettingsCard>
