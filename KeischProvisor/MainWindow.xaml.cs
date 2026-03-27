@@ -16,6 +16,8 @@ using Windows.Foundation.Collections;
 using System.Diagnostics;
 using KeischProvisor.Pages;
 using Microsoft.UI.System;
+using Microsoft.Windows.Globalization;
+using KeischProvisor.Utils;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -32,17 +34,22 @@ namespace KeischProvisor
             InitializeComponent();
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(AppTitleBar);
-            RequestPageTransition(typeof(Pages.MainPage), null!, null!);
+            
             (this.Content as FrameworkElement).Loaded += InitializeSettings;
+            //RequestPageTransition(typeof(Pages.MainPage), null!, null!);
         }
 
         private void InitializeSettings(object sender, RoutedEventArgs e)
         {
+            AppTitleBar.IsBackButtonVisible = false;
             ((App.Current as App)._window.Content as FrameworkElement).RequestedTheme = App.AppSettings.AppTheme;
 
             Debug.WriteLine($"[SM] AppTheme: {App.AppSettings.AppTheme}");
             Debug.WriteLine($"[SM] Loaded settings.");
 
+            ApplicationLanguages.PrimaryLanguageOverride = SettingsManager.AppLanguagesToTag(App.AppSettings.AppLanguage);
+
+            RequestPageTransition(typeof(Pages.MainPage), null!, null!);
         }
 
         public void RequestPageTransition(Type sourcePageType, object parameter, NavigationTransitionInfo navigationTransitionInfo)
@@ -110,10 +117,22 @@ namespace KeischProvisor
         {
             if (ContentFrame.CanGoBack)
             {
-                var lastPage = ContentFrame.BackStack.Last() ?? null;
-                if (lastPage != null)
+                //var lastPage = ContentFrame.BackStack.Last() ?? null;
+                //if (lastPage != null)
+                //{
+                //    RequestPageTransition(lastPage.SourcePageType, null!, lastPage.NavigationTransitionInfo);
+                //}
+                ContentFrame.GoBack();
+
+                if (ContentFrame.CurrentSourcePageType == typeof(SettingsPage))
                 {
-                    RequestPageTransition(lastPage.SourcePageType, null!, lastPage.NavigationTransitionInfo);
+                    AppTitleBar.IsBackButtonVisible = true;
+                    ((MicaBackdrop)SystemBackdrop).Kind = Microsoft.UI.Composition.SystemBackdrops.MicaKind.Base;
+                }
+                else
+                {
+                    AppTitleBar.IsBackButtonVisible = false;
+                    ((MicaBackdrop)SystemBackdrop).Kind = Microsoft.UI.Composition.SystemBackdrops.MicaKind.BaseAlt;
                 }
             }
         }

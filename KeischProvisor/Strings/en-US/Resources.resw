@@ -117,7 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="UI_Setttings.Text" xml:space="preserve">
-    <value>설정</value>
+  <data name="SettingsPage_AppThemeSettingsExpander.Header" xml:space="preserve">
+    <value>App Theme</value>
+  </data>
+  <data name="SettingsPage_AppThemeSettingsExpander.Description" xml:space="preserve">
+    <value>Select which app theme to display</value>
+  </data>
+  <data name="SettingsPage_SettingsTextBlock.Text" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="SettingsPage_ApplicationLanguage.Header" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="SettingsPage_AppThemeRadioButtonsLight.Content" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="SettingsPage_AppThemeRadioButtonsDark.Content" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="SettingsPage_AppThemeRadioButtonsDefault.Content" xml:space="preserve">
+    <value>Use system setting</value>
+  </data>
+  <data name="MainPage_StatusBarTextBlock.Text" xml:space="preserve">
+    <value>Status: Ready</value>
   </data>
 </root>

@@ -48,13 +48,13 @@
         </Grid>
 
         <!-- Main -->
-        <Grid Grid.Row="1" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid Grid.Row="1" Background="{ThemeResource LayerFillColorDefault}">
             
         </Grid>
 
         <!-- Status Bar-->
-        <Grid  Visibility="Visible" x:Name="StatusBar" Grid.Row="2" Background="{ThemeResource ControlAltFillColorTransparent}" Height="32">
-            <TextBlock x:Name="StatusBarText" Text="Status: Ready" VerticalAlignment="Center" Margin="8,0"/>
+        <Grid  Visibility="Visible" x:Name="StatusBar" Grid.Row="2"  Height="32">
+            <TextBlock x:Uid="MainPage_StatusBarTextBlock" x:Name="StatusBarText" VerticalAlignment="Center" Margin="8,0"/>
         </Grid>
     </Grid>
 </Page>

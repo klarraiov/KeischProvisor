@@ -11,6 +11,23 @@
                 <!-- Other merged dictionaries here -->
             </ResourceDictionary.MergedDictionaries>
             <!-- Other app resources here -->
+
+            <ResourceDictionary.ThemeDictionaries>
+                
+                
+                <!--Dark-->
+                <ResourceDictionary x:Key="Default">
+                    <SolidColorBrush x:Key="CustomColor" Color="{ThemeResource LayerFillColorDefault}" />
+                </ResourceDictionary>
+                
+                
+                <!--Light-->
+                <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="CustomColor" Color="{ThemeResource LayerFillColorDefault}" />
+                </ResourceDictionary>
+                
+                
+            </ResourceDictionary.ThemeDictionaries>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

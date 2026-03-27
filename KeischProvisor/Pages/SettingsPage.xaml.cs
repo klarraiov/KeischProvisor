@@ -16,6 +16,8 @@ using Microsoft.UI.Windowing;
 using KeischProvisor.Utils;
 using KeischProvisor;
 using System.Diagnostics;
+using Microsoft.Windows.Globalization;
+using Microsoft.UI.Xaml.Media.Animation;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -33,6 +35,7 @@ public sealed partial class SettingsPage : Page
         InitializeView();
 
         AppThemeRadioButtons.SelectionChanged += RadioButtons_SelectionChanged;
+        AppLanguageComboBox.SelectionChanged += ComboBox_SelectionChanged;
     }
 
     private void InitializeView()
@@ -44,6 +47,8 @@ public sealed partial class SettingsPage : Page
             ElementTheme.Default => 2,
             _ => 2
         };
+
+        AppLanguageComboBox.SelectedIndex = (int)App.AppSettings.AppLanguage;
     }
 
     private void RadioButtons_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -62,5 +67,19 @@ public sealed partial class SettingsPage : Page
             App.AppSettings.AppTheme = elementTheme;
             SettingsManager.SaveSettings(App.AppSettings);
         }
+    }
+
+    private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (sender is ComboBox comboBox)
+        {
+            ApplicationLanguages.PrimaryLanguageOverride = SettingsManager.AppLanguagesToTag((AppLanguages)comboBox.SelectedIndex);
+        }
+
+        App.AppSettings.AppLanguage = (AppLanguages)AppLanguageComboBox.SelectedIndex;
+        SettingsManager.SaveSettings(App.AppSettings);
+
+        //Frame.Navigate(typeof(SettingsPage), null, new DrillInNavigationTransitionInfo());
+        //this.Frame.BackStack.RemoveAt(this.Frame.BackStack.Count - 1);
     }
 }

@@ -27,6 +27,8 @@ public sealed partial class MainPage : Page
     public MainPage()
     {
         InitializeComponent();
+
+        NavigationCacheMode = NavigationCacheMode.Required;
     }
 
     private void Button_Click(object sender, RoutedEventArgs e)
