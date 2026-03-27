@@ -48,31 +48,19 @@ public sealed partial class SettingsPage : Page
 
     private void RadioButtons_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        
-        Debug.WriteLine((sender as RadioButtons).SelectedIndex);
-        FrameworkElement mainWindow = ((MainWindow)((App)Application.Current)._window).Content as FrameworkElement;
-        ElementTheme elementTheme;
-        switch ((sender as RadioButtons).SelectedIndex)
+        if (sender is RadioButtons rb)
         {
-            case 0:
-                mainWindow.RequestedTheme = ElementTheme.Light;
-                elementTheme = ElementTheme.Light;
-                break;
-            case 1:
-                mainWindow.RequestedTheme = ElementTheme.Dark;
-                elementTheme = ElementTheme.Dark;
-                break;
-            case 2:
-                mainWindow.RequestedTheme = ElementTheme.Default;
-                elementTheme = ElementTheme.Default;
-                break;
-            default:
-                mainWindow.RequestedTheme = ElementTheme.Default;
-                elementTheme = ElementTheme.Default;
-                break;
+            ElementTheme elementTheme = rb.SelectedIndex switch
+            {
+                0 => ElementTheme.Light,
+                1 => ElementTheme.Dark,
+                _ => ElementTheme.Default
+            };
 
+            ((Application.Current as App)!._window!.Content as FrameworkElement)!.RequestedTheme = elementTheme;
+
+            App.AppSettings.AppTheme = elementTheme;
+            SettingsManager.SaveSettings(App.AppSettings);
         }
-        App.AppSettings.AppTheme = elementTheme;
-        SettingsManager.SaveSettings(App.AppSettings);
     }
 }

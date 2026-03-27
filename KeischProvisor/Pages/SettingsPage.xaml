@@ -12,7 +12,7 @@
 
     <Grid Margin="30">
         <StackPanel>
-            <TextBlock Text="Settings" FontWeight="SemiBold" FontSize="40"></TextBlock>
+            <TextBlock x:Uid="UI_Setttings" FontWeight="SemiBold" FontSize="40"></TextBlock>
             <communitytoolkit:SettingsExpander
                 Header="App Theme"
                 HeaderIcon="{ui:FontIcon Glyph=&#xE790;}"

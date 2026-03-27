@@ -12,10 +12,11 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- Menubar -->
-        <Grid Grid.Row="0" Margin="0 0 0 0" Visibility="Visible">
+        <Grid x:Name="MenuBarGrid" Grid.Row="0" Margin="0 -8 0 0" Visibility="Visible">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
@@ -24,7 +25,6 @@
             <!-- leftside -->
             <MenuBar Grid.Row="0" Grid.Column="0">
                 <MenuBarItem Title="File">
-                    <MenuFlyoutItem Text="New" />
                     <MenuFlyoutItem Text="Open" />
                     <MenuFlyoutItem Text="Save" />
                     <MenuFlyoutItem Text="Exit" />
@@ -47,7 +47,14 @@
             </Button>
         </Grid>
 
+        <!-- Main -->
+        <Grid Grid.Row="1" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+            
+        </Grid>
 
-        <Grid Grid.Row="1" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"></Grid>
+        <!-- Status Bar-->
+        <Grid  Visibility="Visible" x:Name="StatusBar" Grid.Row="2" Background="{ThemeResource ControlAltFillColorTransparent}" Height="32">
+            <TextBlock x:Name="StatusBarText" Text="Status: Ready" VerticalAlignment="Center" Margin="8,0"/>
+        </Grid>
     </Grid>
 </Page>

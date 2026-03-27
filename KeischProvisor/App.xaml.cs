@@ -19,6 +19,10 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using System.Diagnostics;
 using KeischProvisor.Utils;
+using System.Reflection;
+using System.Globalization;
+using Microsoft.Windows.Globalization;
+using System.Threading.Tasks;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -31,7 +35,7 @@ namespace KeischProvisor
     public partial class App : Application
     {
         public Window? _window;
-        internal static Settings AppSettings;
+        internal static Settings AppSettings = SettingsManager.LoadSettings();
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -39,8 +43,6 @@ namespace KeischProvisor
         public App()
         {
             InitializeComponent();
-
-            AppSettings = SettingsManager.LoadSettings();
         }
 
         /// <summary>
