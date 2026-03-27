@@ -6,6 +6,8 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
+using Microsoft.Windows.Storage;
+using Windows.Storage;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,6 +17,8 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using System.Diagnostics;
+using KeischProvisor.Utils;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -27,7 +31,7 @@ namespace KeischProvisor
     public partial class App : Application
     {
         public Window? _window;
-
+        internal static Settings AppSettings;
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -35,6 +39,8 @@ namespace KeischProvisor
         public App()
         {
             InitializeComponent();
+
+            AppSettings = SettingsManager.LoadSettings();
         }
 
         /// <summary>

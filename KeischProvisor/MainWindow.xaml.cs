@@ -33,6 +33,31 @@ namespace KeischProvisor
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(AppTitleBar);
             RequestPageTransition(typeof(Pages.MainPage), null!, null!);
+
+            InitializeSettings();
+        }
+
+        private void InitializeSettings()
+        {
+            // AppTheme
+            switch (App.AppSettings.AppTheme)
+            {
+                case ElementTheme.Light:
+                    ((FrameworkElement)Content).RequestedTheme = ElementTheme.Light;
+                    break;
+                case ElementTheme.Dark:
+                    ((FrameworkElement)Content).RequestedTheme = ElementTheme.Dark;
+                    break;
+                case ElementTheme.Default:
+                    ((FrameworkElement)Content).RequestedTheme = ElementTheme.Default;
+                    break;
+                default:
+                    ((FrameworkElement)Content).RequestedTheme = ElementTheme.Default;
+                    break;
+            }
+
+            Debug.WriteLine($"[SM] AppTheme: {App.AppSettings.AppTheme}");
+            Debug.WriteLine($"[SM] Loaded settings.");
         }
 
         public void RequestPageTransition(Type sourcePageType, object parameter, NavigationTransitionInfo navigationTransitionInfo)

@@ -20,7 +20,7 @@
                 <communitytoolkit:SettingsExpander.Items>
                     <communitytoolkit:SettingsCard>
                         <communitytoolkit:SettingsCard.Header>  
-                            <RadioButtons Margin="0 -8 0 0" SelectionChanged="RadioButtons_SelectionChanged">
+                            <RadioButtons x:Name="AppThemeRadioButtons" Margin="0 -8 0 0">
                                 <RadioButton>Light</RadioButton>
                                 <RadioButton>Dark</RadioButton>
                                 <RadioButton>Use system setting</RadioButton>
