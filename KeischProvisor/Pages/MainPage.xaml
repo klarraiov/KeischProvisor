@@ -24,23 +24,23 @@
 
             <!-- leftside -->
             <MenuBar Grid.Row="0" Grid.Column="0">
-                <MenuBarItem Title="File">
-                    <MenuFlyoutItem Text="Open" />
-                    <MenuFlyoutItem Text="Save" />
-                    <MenuFlyoutItem Text="Exit" />
+                <MenuBarItem x:Uid="MainPage_MenuFile" Title="File">
+                    <MenuFlyoutItem x:Uid="MainPage_MenuFileOpen" Text="Open" />
+                    <MenuFlyoutItem x:Uid="MainPage_MenuFileSave" Text="Save" />
+                    <MenuFlyoutItem x:Uid="MainPage_MenuFileExit" Text="Exit" />
                 </MenuBarItem>
-                <MenuBarItem Title="Edit">
-                    <MenuFlyoutItem Text="Cut" />
-                    <MenuFlyoutItem Text="Copy" />
-                    <MenuFlyoutItem Text="Paste" />
+                <MenuBarItem x:Uid="MainPage_MenuEdit" Title="Edit">
+                    <MenuFlyoutItem x:Uid="MainPage_MenuEditCut" Text="Cut" />
+                    <MenuFlyoutItem x:Uid="MainPage_MenuEditCopy" Text="Copy" />
+                    <MenuFlyoutItem x:Uid="MainPage_MenuEditPaste" Text="Paste" />
                 </MenuBarItem>
-                <MenuBarItem Title="View">
-                    <MenuFlyoutItem Text="Status bar" />
+                <MenuBarItem x:Uid="MainPage_MenuView" Title="View">
+                    <ToggleMenuFlyoutItem x:Name="MainPage_StatusBarToggleMenuFlyoutItem" x:Uid="MainPage_MenuViewStatusBar" Text="Status bar" Click="StatusBarToggleMenuFlyoutItem_Click"/>
                 </MenuBarItem>
             </MenuBar>
 
             <!-- rightside -->
-            <Button Height="32" Margin="0 0 4 0" Grid.Row="0" Grid.Column="1" Background="Transparent" BorderBrush="Transparent" Click="Button_Click" >
+            <Button Height="32" Margin="0 0 4 0" Grid.Row="0" Grid.Column="1" Background="Transparent" BorderBrush="Transparent" Click="SettingsButton_Click" >
                 <Grid>
                     <FontIcon FontSize="14" Glyph="&#xe713;"/>
                 </Grid>
@@ -49,7 +49,7 @@
 
         <!-- Main -->
         <Grid Grid.Row="1" Background="{ThemeResource LayerFillColorDefault}">
-            
+
         </Grid>
 
         <!-- Status Bar-->

@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml;
+﻿using KeischProvisor.Utils;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -6,23 +7,23 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
+using Microsoft.Windows.Globalization;
 using Microsoft.Windows.Storage;
-using Windows.Storage;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using System.Diagnostics;
-using KeischProvisor.Utils;
-using System.Reflection;
-using System.Globalization;
-using Microsoft.Windows.Globalization;
-using System.Threading.Tasks;
+using Windows.Storage;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -53,6 +54,27 @@ namespace KeischProvisor
         {
             _window = new MainWindow();
             _window.Activate();
+        }
+
+        // You can pass arguments to the restarted instance.
+        internal void RestartApp(string arguments = "")
+        {
+            // The restart will be executed immediately.
+            Windows.ApplicationModel.Core.AppRestartFailureReason failureReason =
+                Microsoft.Windows.AppLifecycle.AppInstance.Restart(arguments);
+
+            // If the restart fails, handle it here.
+            switch (failureReason)
+            {
+                case AppRestartFailureReason.RestartPending:
+                    break;
+                case AppRestartFailureReason.NotInForeground:
+                    break;
+                case AppRestartFailureReason.InvalidUser:
+                    break;
+                default: //AppRestartFailureReason.Other
+                    break;
+            }
         }
     }
 }

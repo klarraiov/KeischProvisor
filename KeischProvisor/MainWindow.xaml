@@ -37,8 +37,7 @@
             IsBackButtonVisible="True"
             IsPaneToggleButtonVisible="False"
             Title="KeischProvisor"
-            BackRequested="AppTitleBar_BackRequested"
-            >
+            BackRequested="AppTitleBar_BackRequested">
             <TitleBar.IconSource>
                 <ImageIconSource ImageSource="/Assets/Square44x44Logo.png" />
             </TitleBar.IconSource>

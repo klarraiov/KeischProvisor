@@ -1,3 +1,4 @@
+using KeischProvisor.Utils;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -27,13 +28,30 @@ public sealed partial class MainPage : Page
     public MainPage()
     {
         InitializeComponent();
-
+        this.Loaded += InitializeSettings;
         NavigationCacheMode = NavigationCacheMode.Required;
     }
 
-    private void Button_Click(object sender, RoutedEventArgs e)
+    private void InitializeSettings(object sender, RoutedEventArgs e)
+    {
+        MainPage_StatusBarToggleMenuFlyoutItem.IsChecked = App.AppSettings.IsStatusBarVisible;
+        StatusBar.Visibility = App.AppSettings.IsStatusBarVisible ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void SettingsButton_Click(object sender, RoutedEventArgs e)
     {
         MainWindow mainWindow = (MainWindow)((App)Application.Current)._window!;
         mainWindow.RequestPageTransition(typeof(SettingsPage), null!, new DrillInNavigationTransitionInfo());
+    }
+
+    private void StatusBarToggleMenuFlyoutItem_Click(object sender, RoutedEventArgs e)
+    {   
+        if (sender is ToggleMenuFlyoutItem toggleMenuFlyoutItem)
+        {
+            StatusBar.Visibility = toggleMenuFlyoutItem.IsChecked ? Visibility.Visible : Visibility.Collapsed;
+
+            App.AppSettings.IsStatusBarVisible = toggleMenuFlyoutItem.IsChecked;
+            SettingsManager.SaveSettings(App.AppSettings);
+        }
     }
 }

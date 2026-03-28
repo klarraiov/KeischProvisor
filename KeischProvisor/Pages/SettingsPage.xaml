@@ -10,9 +10,41 @@
     xmlns:ui="using:CommunityToolkit.WinUI"
     mc:Ignorable="d">
 
+    <Page.Resources>
+        <ResourceDictionary>
+            <!--AppLanguageRestartInfo-->
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="InfoBarInformationalSeverityBackgroundBrush" Color="#FF34424d" />
+                    <Color x:Key="InfoBarInformationalSeverityIconBackground">#FF5fb2f2</Color>
+                    <SolidColorBrush x:Key="SolidBackgroundBrush" Color="Black" />
+                </ResourceDictionary>
+
+                <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="InfoBarInformationalSeverityBackgroundBrush" Color="#FFd3e7f7" />
+                    <Color x:Key="InfoBarInformationalSeverityIconBackground">#FF0063b1</Color>
+                    <SolidColorBrush x:Key="SolidBackgroundBrush" Color="White" />
+                </ResourceDictionary>
+
+                <ResourceDictionary x:Key="HighContrast">
+                    <SolidColorBrush x:Key="InfoBarInformationalSeverityBackgroundBrush" Color="{StaticResource SystemColorWindowColor}" />
+                    <SolidColorBrush x:Key="SolidBackgroundBrush" Color="{StaticResource SystemColorWindowTextColor}" />
+                    <Color x:Key="InfoBarInformationalSeverityIconBackground">#FF5fb2f2</Color>
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+            
+            <TransitionCollection x:Key="SettingsCardsAnimations">
+                <EntranceThemeTransition FromVerticalOffset="50" />
+                <!--  Animates cards when loaded  -->
+                <RepositionThemeTransition IsStaggeringEnabled="False" />
+                <!--  Smoothly animates individual cards upon whenever Expanders are expanded/collapsed  -->
+            </TransitionCollection>
+        </ResourceDictionary>
+    </Page.Resources>
     <ScrollViewer>
         <Grid Margin="40 20 40 20">
-            <StackPanel Orientation="Vertical" Spacing="8">
+            <StackPanel Orientation="Vertical" Spacing="2" ChildrenTransitions="{StaticResource SettingsCardsAnimations}">
+
                 <TextBlock x:Uid="SettingsPage_SettingsTextBlock" FontWeight="SemiBold" FontSize="40"></TextBlock>
                 <!--App Theme-->
                 <communitytoolkit:SettingsExpander
@@ -31,15 +63,41 @@
                     </communitytoolkit:SettingsExpander.Items>
                 </communitytoolkit:SettingsExpander>
 
-                <!--Application Language-->
-                <communitytoolkit:SettingsCard HeaderIcon="{ui:FontIcon Glyph=&#xE775;}" x:Uid="SettingsPage_ApplicationLanguage">
-                    <ComboBox x:Name="AppLanguageComboBox">
-                        <ComboBoxItem Content="English"></ComboBoxItem>
-                        <ComboBoxItem Content="Korean"></ComboBoxItem>
-                    </ComboBox>
-                </communitytoolkit:SettingsCard>
+                <StackPanel>
+                    <!--Application Language-->
+                    <communitytoolkit:SettingsCard HeaderIcon="{ui:FontIcon Glyph=&#xE775;}" x:Uid="SettingsPage_ApplicationLanguage">
+                        <ComboBox x:Name="AppLanguageComboBox">
+                            <ComboBoxItem Content="English"></ComboBoxItem>
+                            <ComboBoxItem Content="Korean"></ComboBoxItem>
+                        </ComboBox>
+                    </communitytoolkit:SettingsCard>
+                    <InfoBar Margin="0 2 0 0" x:Uid="AppLanguageRestartInfo" IsClosable="False" IsOpen="{x:Bind Mode=OneWay, Path=IsAppLanguageComboBoxChanged}" Visibility="{x:Bind Mode=OneWay, Path=IsAppLanguageComboBoxChanged}">
+
+                        <InfoBar.ActionButton>
+                            <Button HorizontalAlignment="Right" x:Uid="AppLanguageRestartInfoButton" Click="AppLanguageRestartInfoButton_Click" />
+                        </InfoBar.ActionButton>
+                    </InfoBar>
+                </StackPanel>
+               
+
+                <!--App Theme-->
+                <communitytoolkit:SettingsExpander
+            HeaderIcon="{ui:FontIcon Glyph=&#xE790;}"
+            x:Uid="SettingsPage_AppThemeSettingsExpander">
+                    <communitytoolkit:SettingsExpander.Items>
+                        <communitytoolkit:SettingsCard>
+                            <communitytoolkit:SettingsCard.Header>
+                                <RadioButtons x:Name="AppThemeRadioButtons1" Margin="0 -8 0 0">
+                                    <RadioButton x:Uid="SettingsPage_AppThemeRadioButtonsLight"/>
+                                    <RadioButton x:Uid="SettingsPage_AppThemeRadioButtonsDark"/>
+                                    <RadioButton x:Uid="SettingsPage_AppThemeRadioButtonsDefault"/>
+                                </RadioButtons>
+                            </communitytoolkit:SettingsCard.Header>
+                        </communitytoolkit:SettingsCard>
+                    </communitytoolkit:SettingsExpander.Items>
+                </communitytoolkit:SettingsExpander>
             </StackPanel>
         </Grid>
     </ScrollViewer>
-    
+
 </Page>
