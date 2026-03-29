@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:KeischProvisor.Pages"
+    xmlns:app="using:KeischProvisor"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:communitytoolkit="using:CommunityToolkit.WinUI.Controls"
@@ -32,70 +33,80 @@
                     <Color x:Key="InfoBarInformationalSeverityIconBackground">#FF5fb2f2</Color>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
-            
-            <TransitionCollection x:Key="SettingsCardsAnimations">
-                <EntranceThemeTransition FromVerticalOffset="50" />
-                <!--  Animates cards when loaded  -->
-                <RepositionThemeTransition IsStaggeringEnabled="False" />
-                <!--  Smoothly animates individual cards upon whenever Expanders are expanded/collapsed  -->
-            </TransitionCollection>
         </ResourceDictionary>
     </Page.Resources>
     <ScrollViewer>
         <Grid Margin="40 20 40 20">
-            <StackPanel Orientation="Vertical" Spacing="2" ChildrenTransitions="{StaticResource SettingsCardsAnimations}">
+            <StackPanel Orientation="Vertical" ChildrenTransitions="{StaticResource GeneralAnimations}">
 
                 <TextBlock x:Uid="SettingsPage_SettingsTextBlock" FontWeight="SemiBold" FontSize="40"></TextBlock>
-                <!--App Theme-->
-                <communitytoolkit:SettingsExpander
-            HeaderIcon="{ui:FontIcon Glyph=&#xE790;}"
-            x:Uid="SettingsPage_AppThemeSettingsExpander">
-                    <communitytoolkit:SettingsExpander.Items>
-                        <communitytoolkit:SettingsCard>
-                            <communitytoolkit:SettingsCard.Header>
-                                <RadioButtons x:Name="AppThemeRadioButtons" Margin="0 -8 0 0">
-                                    <RadioButton x:Uid="SettingsPage_AppThemeRadioButtonsLight"/>
-                                    <RadioButton x:Uid="SettingsPage_AppThemeRadioButtonsDark"/>
-                                    <RadioButton x:Uid="SettingsPage_AppThemeRadioButtonsDefault"/>
-                                </RadioButtons>
-                            </communitytoolkit:SettingsCard.Header>
-                        </communitytoolkit:SettingsCard>
-                    </communitytoolkit:SettingsExpander.Items>
-                </communitytoolkit:SettingsExpander>
-
-                <StackPanel>
+                <StackPanel Spacing="2" ChildrenTransitions="{StaticResource GeneralAnimations}">
+                    <TextBlock x:Uid="SettingsPage_AppearanceTextBlock" FontWeight="SemiBold" Margin="0 12 0 4"></TextBlock>
                     <!--Application Language-->
-                    <communitytoolkit:SettingsCard HeaderIcon="{ui:FontIcon Glyph=&#xE775;}" x:Uid="SettingsPage_ApplicationLanguage">
-                        <ComboBox x:Name="AppLanguageComboBox">
-                            <ComboBoxItem Content="English"></ComboBoxItem>
-                            <ComboBoxItem Content="Korean"></ComboBoxItem>
-                        </ComboBox>
-                    </communitytoolkit:SettingsCard>
-                    <InfoBar Margin="0 2 0 0" x:Uid="AppLanguageRestartInfo" IsClosable="False" IsOpen="{x:Bind Mode=OneWay, Path=IsAppLanguageComboBoxChanged}" Visibility="{x:Bind Mode=OneWay, Path=IsAppLanguageComboBoxChanged}">
+                    <StackPanel ChildrenTransitions="{StaticResource GeneralAnimations}">
+                        <communitytoolkit:SettingsCard HeaderIcon="{ui:FontIcon Glyph=&#xE775;}" x:Uid="SettingsPage_ApplicationLanguage">
+                            <ComboBox x:Name="AppLanguageComboBox">
+                                <ComboBoxItem Content="English"></ComboBoxItem>
+                                <ComboBoxItem Content="Korean"></ComboBoxItem>
+                            </ComboBox>
+                        </communitytoolkit:SettingsCard>
+                        <InfoBar Margin="0 2 0 0" x:Uid="AppLanguageRestartInfo" IsClosable="False" IsOpen="{x:Bind Mode=OneWay, Path=IsAppLanguageComboBoxChanged}" Visibility="{x:Bind Mode=OneWay, Path=IsAppLanguageComboBoxChanged}">
 
-                        <InfoBar.ActionButton>
-                            <Button HorizontalAlignment="Right" x:Uid="AppLanguageRestartInfoButton" Click="AppLanguageRestartInfoButton_Click" />
-                        </InfoBar.ActionButton>
-                    </InfoBar>
-                </StackPanel>
-               
-
-                <!--App Theme-->
-                <communitytoolkit:SettingsExpander
+                            <InfoBar.ActionButton>
+                                <Button HorizontalAlignment="Right" x:Uid="AppLanguageRestartInfoButton" Click="AppLanguageRestartInfoButton_Click" />
+                            </InfoBar.ActionButton>
+                        </InfoBar>
+                    </StackPanel>
+                    <!--App Theme-->
+                    <communitytoolkit:SettingsExpander
             HeaderIcon="{ui:FontIcon Glyph=&#xE790;}"
             x:Uid="SettingsPage_AppThemeSettingsExpander">
-                    <communitytoolkit:SettingsExpander.Items>
-                        <communitytoolkit:SettingsCard>
-                            <communitytoolkit:SettingsCard.Header>
-                                <RadioButtons x:Name="AppThemeRadioButtons1" Margin="0 -8 0 0">
-                                    <RadioButton x:Uid="SettingsPage_AppThemeRadioButtonsLight"/>
-                                    <RadioButton x:Uid="SettingsPage_AppThemeRadioButtonsDark"/>
-                                    <RadioButton x:Uid="SettingsPage_AppThemeRadioButtonsDefault"/>
-                                </RadioButtons>
-                            </communitytoolkit:SettingsCard.Header>
-                        </communitytoolkit:SettingsCard>
-                    </communitytoolkit:SettingsExpander.Items>
-                </communitytoolkit:SettingsExpander>
+                        <communitytoolkit:SettingsExpander.Items>
+                            <communitytoolkit:SettingsCard>
+                                <communitytoolkit:SettingsCard.Header>
+                                    <RadioButtons x:Name="AppThemeRadioButtons" Margin="0 -8 0 0">
+                                        <RadioButton x:Uid="SettingsPage_AppThemeRadioButtonsLight"/>
+                                        <RadioButton x:Uid="SettingsPage_AppThemeRadioButtonsDark"/>
+                                        <RadioButton x:Uid="SettingsPage_AppThemeRadioButtonsDefault"/>
+                                    </RadioButtons>
+                                </communitytoolkit:SettingsCard.Header>
+                            </communitytoolkit:SettingsCard>
+                        </communitytoolkit:SettingsExpander.Items>
+                    </communitytoolkit:SettingsExpander>
+                </StackPanel>
+
+
+                <StackPanel ChildrenTransitions="{StaticResource GeneralAnimations}">
+                    <TextBlock x:Uid="SettingsPage_AboutTextBlock" FontWeight="SemiBold" Margin="0 12 0 4"></TextBlock>
+
+                    <!--About-->
+                    <communitytoolkit:SettingsExpander Header="KeischProvisor" Description="© 2026 klarraiov. All rights reserved.">
+                        <communitytoolkit:SettingsExpander.HeaderIcon>
+                            <ImageIcon Source="/Assets/LockScreenLogo.png" />
+                        </communitytoolkit:SettingsExpander.HeaderIcon>
+
+                        <TextBlock IsTextSelectionEnabled="True" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind app:App.AppVersion}" FontSize="12"/>
+
+                        <communitytoolkit:SettingsExpander.Items>
+
+
+                            <communitytoolkit:SettingsCard ContentAlignment="Left">
+                                <StackPanel>
+                                    <TextBlock Text="References"/>
+                                    <StackPanel Grid.Row="1" Margin="-12 0 0 0" Orientation="Vertical">
+                                        <HyperlinkButton NavigateUri="https://github.com/microsoft/WindowsAppSDK">Windows App SDK</HyperlinkButton>
+                                        <HyperlinkButton NavigateUri="https://github.com/microsoft/microsoft-ui-xaml">WinUI 3</HyperlinkButton>
+                                        <HyperlinkButton NavigateUri="https://github.com/CommunityToolkit/Windows">Windows Community Toolkit</HyperlinkButton>
+                                        <HyperlinkButton NavigateUri="https://github.com/google/cityhash">CityHash64</HyperlinkButton>
+                                    </StackPanel>
+                                </StackPanel>
+                            </communitytoolkit:SettingsCard>
+
+                            <communitytoolkit:SettingsCard Header="THIS CODE AND INFORMATION IS PROVIDED ‘AS IS’ WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE."/>
+                        </communitytoolkit:SettingsExpander.Items>
+                    </communitytoolkit:SettingsExpander>
+                </StackPanel>
+                
             </StackPanel>
         </Grid>
     </ScrollViewer>

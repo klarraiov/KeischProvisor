@@ -180,4 +180,28 @@
   <data name="AppLanguageRestartInfo.Title" xml:space="preserve">
     <value>Restart required</value>
   </data>
+  <data name="Runtime_MainPage_StatusBarTextBlock_FileOpened" xml:space="preserve">
+    <value>File Opened: {0}</value>
+  </data>
+  <data name="MainPage_MainGrid_SignatureTextBlock.Text" xml:space="preserve">
+    <value>Signature: </value>
+  </data>
+  <data name="MainPage_MainGrid_BuildTextBlock.Text" xml:space="preserve">
+    <value>Build: </value>
+  </data>
+  <data name="MainPage_MainGrid_ChecksumTextBlock.Text" xml:space="preserve">
+    <value>Checksum: </value>
+  </data>
+  <data name="MainPage_MainGrid_TopHeadersCountTextBlock.Text" xml:space="preserve">
+    <value>Top Headers Count: </value>
+  </data>
+  <data name="Runtime_MainPage_StatusBarTextBlock_HSHRFileStatus" xml:space="preserve">
+    <value>[HSHRFile] Reading at {0}, {3} {1}/{2}</value>
+  </data>
+  <data name="SettingsPage_AppearanceTextBlock.Text" xml:space="preserve">
+    <value>Appearance</value>
+  </data>
+  <data name="SettingsPage_AboutTextBlock.Text" xml:space="preserve">
+    <value>About</value>
+  </data>
 </root>

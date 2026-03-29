@@ -180,4 +180,28 @@
   <data name="AppLanguageRestartInfo.Title" xml:space="preserve">
     <value>다시 시작 필요</value>
   </data>
+  <data name="Runtime_MainPage_StatusBarTextBlock_FileOpened" xml:space="preserve">
+    <value>파일 열기: {0}</value>
+  </data>
+  <data name="MainPage_MainGrid_SignatureTextBlock.Text" xml:space="preserve">
+    <value>형식: </value>
+  </data>
+  <data name="MainPage_MainGrid_BuildTextBlock.Text" xml:space="preserve">
+    <value>버전: </value>
+  </data>
+  <data name="MainPage_MainGrid_ChecksumTextBlock.Text" xml:space="preserve">
+    <value>유효성 검증 값: </value>
+  </data>
+  <data name="MainPage_MainGrid_TopHeadersCountTextBlock.Text" xml:space="preserve">
+    <value>루트 헤더 개수: </value>
+  </data>
+  <data name="Runtime_MainPage_StatusBarTextBlock_HSHRFileStatus" xml:space="preserve">
+    <value>[HSHRFile] {0}에서 {3} {1}/{2} 읽는중</value>
+  </data>
+  <data name="SettingsPage_AppearanceTextBlock.Text" xml:space="preserve">
+    <value>외형</value>
+  </data>
+  <data name="SettingsPage_AboutTextBlock.Text" xml:space="preserve">
+    <value>정보</value>
+  </data>
 </root>

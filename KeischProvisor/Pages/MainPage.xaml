@@ -25,7 +25,7 @@
             <!-- leftside -->
             <MenuBar Grid.Row="0" Grid.Column="0">
                 <MenuBarItem x:Uid="MainPage_MenuFile" Title="File">
-                    <MenuFlyoutItem x:Uid="MainPage_MenuFileOpen" Text="Open" />
+                    <MenuFlyoutItem x:Uid="MainPage_MenuFileOpen" Text="Open" Click="MainPage_MenuFileOpenMenuFlyoutItem_Click"/>
                     <MenuFlyoutItem x:Uid="MainPage_MenuFileSave" Text="Save" />
                     <MenuFlyoutItem x:Uid="MainPage_MenuFileExit" Text="Exit" />
                 </MenuBarItem>
@@ -48,13 +48,34 @@
         </Grid>
 
         <!-- Main -->
-        <Grid Grid.Row="1" Background="{ThemeResource LayerFillColorDefault}">
+        <Grid x:Name="MainPage_MainGrid" Grid.Row="1" Background="{ThemeResource LayerFillColorDefault}" Margin="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
+            <StackPanel Margin="10" Orientation="Horizontal" Grid.Row="0">
+                <StackPanel Orientation="Horizontal" Margin="0,0,16,8">
+                    <TextBlock x:Uid="MainPage_MainGrid_SignatureTextBlock" Text="Signature: " Opacity="0.7" xml:space="preserve"/>
+                    <TextBlock x:Name="MainPage_MainGrid_SignatureTextBlock" Text="—"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,16,8">
+                    <TextBlock x:Uid="MainPage_MainGrid_BuildTextBlock" Text="Build: " Opacity="0.7" xml:space="preserve"/>
+                    <TextBlock x:Name="MainPage_MainGrid_BuildTextBlock" Text="—"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,16,8">
+                    <TextBlock x:Uid="MainPage_MainGrid_ChecksumTextBlock" Text="Checksum: " Opacity="0.7" xml:space="preserve"/>
+                    <TextBlock x:Name="MainPage_MainGrid_ChecksumTextBlock" Text="—"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,16,8">
+                    <TextBlock x:Uid="MainPage_MainGrid_TopHeadersCountTextBlock" Text="Top Headers Count: " Opacity="0.7" xml:space="preserve"/>
+                    <TextBlock x:Name="MainPage_MainGrid_TopHeadersCountTextBlock" Text="—"/>
+                </StackPanel>
+            </StackPanel>
         </Grid>
 
         <!-- Status Bar-->
         <Grid  Visibility="Visible" x:Name="StatusBar" Grid.Row="2"  Height="32">
-            <TextBlock x:Uid="MainPage_StatusBarTextBlock" x:Name="StatusBarText" VerticalAlignment="Center" Margin="8,0"/>
+            <TextBlock x:Uid="MainPage_StatusBarTextBlock" x:Name="StatusBarText" VerticalAlignment="Center" Margin="8,0" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"/>
         </Grid>
     </Grid>
 </Page>

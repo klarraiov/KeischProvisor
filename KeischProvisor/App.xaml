@@ -11,7 +11,12 @@
                 <!-- Other merged dictionaries here -->
             </ResourceDictionary.MergedDictionaries>
             <!-- Other app resources here -->
-            
+            <TransitionCollection x:Key="GeneralAnimations">
+                <EntranceThemeTransition FromVerticalOffset="50" />
+                <!--  Animates cards when loaded  -->
+                <RepositionThemeTransition IsStaggeringEnabled="False" />
+                <!--  Smoothly animates individual cards upon whenever Expanders are expanded/collapsed  -->
+            </TransitionCollection>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

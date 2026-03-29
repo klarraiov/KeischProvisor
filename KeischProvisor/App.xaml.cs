@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
+using Microsoft.Windows.ApplicationModel.Resources;
 using Microsoft.Windows.Globalization;
 using Microsoft.Windows.Storage;
 using System;
@@ -36,7 +37,9 @@ namespace KeischProvisor
     public partial class App : Application
     {
         public Window? _window;
+        internal static string AppVersion = "Version 1.0";
         internal static Settings AppSettings = SettingsManager.LoadSettings();
+        internal static ResourceManager AppResourceManager = new ResourceManager();
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -60,8 +63,7 @@ namespace KeischProvisor
         internal void RestartApp(string arguments = "")
         {
             // The restart will be executed immediately.
-            Windows.ApplicationModel.Core.AppRestartFailureReason failureReason =
-                Microsoft.Windows.AppLifecycle.AppInstance.Restart(arguments);
+            Windows.ApplicationModel.Core.AppRestartFailureReason failureReason = Microsoft.Windows.AppLifecycle.AppInstance.Restart(arguments);
 
             // If the restart fails, handle it here.
             switch (failureReason)
