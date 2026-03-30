@@ -31,7 +31,7 @@ namespace KeischProvisor.Pages;
 /// </summary>
 public sealed partial class MainPage : Page
 {
-    private Respectre.Utils.HSHRFile targetHSHRFile;
+    private Respectre.Utils.HSHRFile? currentHSHRFile;
     public MainPage()
     {
         InitializeComponent();
@@ -78,11 +78,14 @@ public sealed partial class MainPage : Page
 
     private async Task InitializeCacheElement(string filepath)
     {
-        targetHSHRFile = new Respectre.Utils.HSHRFile(filepath);
+        testui.Children.Clear();
+        currentHSHRFile = null;
+
+        currentHSHRFile = new Respectre.Utils.HSHRFile(filepath);
         string statusFormat = App.AppResourceManager.MainResourceMap.GetValue("Resources/Runtime_MainPage_StatusBarTextBlock_HSHRFileStatus").ValueAsString;
         await Task.Run(() =>
         {
-            targetHSHRFile.ScanStructure(status =>
+            currentHSHRFile.ScanStructure(status =>
             {
                 string text = string.Format(statusFormat, status.Position, status.CurrentIndex, status.TotalTopHeadersCount, status.Stage);
                 DispatcherQueue.TryEnqueue(() =>
@@ -101,17 +104,17 @@ public sealed partial class MainPage : Page
             });
         });
 
-        MainPage_MainGrid_SignatureTextBlock.Text = Encoding.UTF8.GetString(BitConverter.GetBytes(targetHSHRFile.Signature));
-        MainPage_MainGrid_BuildTextBlock.Text = $"{targetHSHRFile.Version} ({targetHSHRFile.VersionMajor}.{targetHSHRFile.VersionMinor})";
-        MainPage_MainGrid_ChecksumTextBlock .Text = $"0x{targetHSHRFile.Checksum:X16} ({targetHSHRFile.Checksum})";
-        MainPage_MainGrid_TopHeadersCountTextBlock.Text = $"{targetHSHRFile.TopHeadersCount}";
+        MainPage_MainGrid_SignatureTextBlock.Text = Encoding.UTF8.GetString(BitConverter.GetBytes(currentHSHRFile.Signature));
+        MainPage_MainGrid_BuildTextBlock.Text = $"{currentHSHRFile.Version} ({currentHSHRFile.VersionMajor}.{currentHSHRFile.VersionMinor})";
+        MainPage_MainGrid_ChecksumTextBlock .Text = $"0x{currentHSHRFile.Checksum:X16} ({currentHSHRFile.Checksum})";
+        MainPage_MainGrid_TopHeadersCountTextBlock.Text = $"{currentHSHRFile.TopHeadersCount}";
 
-        int previousRowCount = MainPage_MainGrid.RowDefinitions.Count;
+        //int previousRowCount = testui.RowDefinitions.Count;
         App.Current.Resources.TryGetValue("GeneralAnimations", out object transistion);
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < currentHSHRFile.TopHeadersCount; i++)
         {
             RowDefinition rowDefinition = new RowDefinition { Height = GridLength.Auto };
-            MainPage_MainGrid.RowDefinitions.Add(rowDefinition);
+            //testui.RowDefinitions.Add(rowDefinition);
 
             StackPanel sp = new StackPanel
             {
@@ -119,22 +122,14 @@ public sealed partial class MainPage : Page
                 ChildrenTransitions = (TransitionCollection)transistion,
                 Children =
                 {
-                    new StackPanel
+                    new Expander
                     {
-                        Children =
-                        {
-                            new TextBlock
-                            {
-                                Text = $"Cache file: {filepath}",
-                                FontSize = 18,
-                                Margin = new Thickness(0, 0, 0, 0)
-                            },
-                        }
+                        Content = new TextBlock{Text = $"Header {i}"},
                     }
                 }
             };
-            Grid.SetRow(sp, previousRowCount + i);
-            MainPage_MainGrid.Children.Add(sp);
+            //Grid.SetRow(sp, previousRowCount + i);
+            testui.Children.Add(sp);
         }
     }
 }

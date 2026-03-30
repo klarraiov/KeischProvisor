@@ -6,6 +6,7 @@
     xmlns:local="using:KeischProvisor.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:communitytoolkit="using:CommunityToolkit.WinUI.Controls"
     mc:Ignorable="d">
 
     <Grid>
@@ -48,12 +49,13 @@
         </Grid>
 
         <!-- Main -->
-        <Grid x:Name="MainPage_MainGrid" Grid.Row="1" Background="{ThemeResource LayerFillColorDefault}" Margin="0">
+        <Grid Grid.Row="1" x:Name="MainPage_MainGrid" Background="{ThemeResource LayerFillColorDefault}" Margin="0" ChildrenTransitions="{StaticResource GeneralAnimations}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <StackPanel Margin="10" Orientation="Horizontal" Grid.Row="0">
+            <communitytoolkit:WrapPanel Margin="10 6 10 0" Orientation="Horizontal" Background="Transparent" ChildrenTransitions="{StaticResource GeneralAnimations}">
                 <StackPanel Orientation="Horizontal" Margin="0,0,16,8">
                     <TextBlock x:Uid="MainPage_MainGrid_SignatureTextBlock" Text="Signature: " Opacity="0.7" xml:space="preserve"/>
                     <TextBlock x:Name="MainPage_MainGrid_SignatureTextBlock" Text="—"/>
@@ -70,8 +72,14 @@
                     <TextBlock x:Uid="MainPage_MainGrid_TopHeadersCountTextBlock" Text="Top Headers Count: " Opacity="0.7" xml:space="preserve"/>
                     <TextBlock x:Name="MainPage_MainGrid_TopHeadersCountTextBlock" Text="—"/>
                 </StackPanel>
-            </StackPanel>
+            </communitytoolkit:WrapPanel>
+            <ScrollViewer Visibility="Visible" Grid.Row="1">
+                <communitytoolkit:WrapPanel x:Name="testui" HorizontalAlignment="Center" ChildrenTransitions="{StaticResource GeneralAnimations}">
+
+                </communitytoolkit:WrapPanel>
+            </ScrollViewer>
         </Grid>
+
 
         <!-- Status Bar-->
         <Grid  Visibility="Visible" x:Name="StatusBar" Grid.Row="2"  Height="32">
