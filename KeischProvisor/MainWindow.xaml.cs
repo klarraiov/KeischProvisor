@@ -54,16 +54,16 @@ namespace KeischProvisor
 
         public void RequestPageTransition(Type sourcePageType, object parameter, NavigationTransitionInfo navigationTransitionInfo)
         {
-            if (sourcePageType == typeof(SettingsPage))
-            {
-                AppTitleBar.IsBackButtonVisible = true;
-                ((MicaBackdrop)SystemBackdrop).Kind = Microsoft.UI.Composition.SystemBackdrops.MicaKind.Base;
-            }
-            else
-            {
-                AppTitleBar.IsBackButtonVisible = false;
-                ((MicaBackdrop)SystemBackdrop).Kind = Microsoft.UI.Composition.SystemBackdrops.MicaKind.BaseAlt;
-            }
+            //if (sourcePageType != typeof(MainPage))
+            //{
+            //    AppTitleBar.IsBackButtonVisible = true;
+            //    ((MicaBackdrop)SystemBackdrop).Kind = Microsoft.UI.Composition.SystemBackdrops.MicaKind.Base;
+            //}
+            //else
+            //{
+            //    AppTitleBar.IsBackButtonVisible = false;
+            //    ((MicaBackdrop)SystemBackdrop).Kind = Microsoft.UI.Composition.SystemBackdrops.MicaKind.BaseAlt;
+            //}
             ContentFrame.Navigate(sourcePageType, parameter, navigationTransitionInfo);
         }
 
@@ -124,16 +124,16 @@ namespace KeischProvisor
                 //}
                 ContentFrame.GoBack();
 
-                if (ContentFrame.CurrentSourcePageType == typeof(SettingsPage))
-                {
-                    AppTitleBar.IsBackButtonVisible = true;
-                    ((MicaBackdrop)SystemBackdrop).Kind = Microsoft.UI.Composition.SystemBackdrops.MicaKind.Base;
-                }
-                else
-                {
-                    AppTitleBar.IsBackButtonVisible = false;
-                    ((MicaBackdrop)SystemBackdrop).Kind = Microsoft.UI.Composition.SystemBackdrops.MicaKind.BaseAlt;
-                }
+                //if (ContentFrame.CurrentSourcePageType != typeof(MainPage))
+                //{
+                //    AppTitleBar.IsBackButtonVisible = true;
+                //    ((MicaBackdrop)SystemBackdrop).Kind = Microsoft.UI.Composition.SystemBackdrops.MicaKind.Base;
+                //}
+                //else
+                //{
+                //    AppTitleBar.IsBackButtonVisible = false;
+                //    ((MicaBackdrop)SystemBackdrop).Kind = Microsoft.UI.Composition.SystemBackdrops.MicaKind.BaseAlt;
+                //}
             }
         }
 

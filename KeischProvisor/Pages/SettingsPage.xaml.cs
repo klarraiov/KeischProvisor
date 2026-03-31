@@ -48,7 +48,7 @@ public sealed partial class SettingsPage : Page, INotifyPropertyChanged
         }
     }
 
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
     private void OnPropertyChanged([CallerMemberName] string propertyName = "")
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -61,6 +61,12 @@ public sealed partial class SettingsPage : Page, INotifyPropertyChanged
 
         AppThemeRadioButtons.SelectionChanged += AppThemeRadioButtons_SelectionChanged;
         AppLanguageComboBox.SelectionChanged += AppLanguageComboBox_SelectionChanged;
+    }
+    protected override void OnNavigatedTo(NavigationEventArgs e)
+    {
+        base.OnNavigatedTo(e);
+        ((MainWindow)((App)App.Current!)._window!).AppTitleBar.IsBackButtonVisible = true;
+        ((App.Current as App)!._window!.SystemBackdrop as MicaBackdrop)!.Kind = Microsoft.UI.Composition.SystemBackdrops.MicaKind.Base;
     }
 
     private void InitializeView()

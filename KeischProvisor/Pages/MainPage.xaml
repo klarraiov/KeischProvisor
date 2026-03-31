@@ -55,28 +55,36 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <communitytoolkit:WrapPanel Margin="10 6 10 0" Orientation="Horizontal" Background="Transparent" ChildrenTransitions="{StaticResource GeneralAnimations}">
-                <StackPanel Orientation="Horizontal" Margin="0,0,16,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <communitytoolkit:WrapPanel Grid.Row="0" Grid.Column="0" Margin="10 8 0 0" Orientation="Horizontal" Background="Transparent" ChildrenTransitions="{StaticResource GeneralAnimations}">
+                <StackPanel Orientation="Horizontal" Margin="0 0 16 0">
                     <TextBlock x:Uid="MainPage_MainGrid_SignatureTextBlock" Text="Signature: " Opacity="0.7" xml:space="preserve"/>
                     <TextBlock x:Name="MainPage_MainGrid_SignatureTextBlock" Text="—"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0,0,16,8">
+                <StackPanel Orientation="Horizontal" Margin="0 0 16 0">
                     <TextBlock x:Uid="MainPage_MainGrid_BuildTextBlock" Text="Build: " Opacity="0.7" xml:space="preserve"/>
                     <TextBlock x:Name="MainPage_MainGrid_BuildTextBlock" Text="—"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0,0,16,8">
+                <StackPanel Orientation="Horizontal" Margin="0 0 16 0">
                     <TextBlock x:Uid="MainPage_MainGrid_ChecksumTextBlock" Text="Checksum: " Opacity="0.7" xml:space="preserve"/>
                     <TextBlock x:Name="MainPage_MainGrid_ChecksumTextBlock" Text="—"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0,0,16,8">
+                <StackPanel Orientation="Horizontal" Margin="0 0 16 0">
                     <TextBlock x:Uid="MainPage_MainGrid_TopHeadersCountTextBlock" Text="Top Headers Count: " Opacity="0.7" xml:space="preserve"/>
                     <TextBlock x:Name="MainPage_MainGrid_TopHeadersCountTextBlock" Text="—"/>
                 </StackPanel>
             </communitytoolkit:WrapPanel>
-            <ScrollViewer Visibility="Visible" Grid.Row="1">
-                <communitytoolkit:WrapPanel x:Name="testui" HorizontalAlignment="Center" ChildrenTransitions="{StaticResource GeneralAnimations}">
-
-                </communitytoolkit:WrapPanel>
+            <ScrollViewer Visibility="Visible" Grid.Row="1" Grid.Column="0" Margin="0 10 0 0" >
+                <Grid x:Name="testui" Margin="10 0 10 10" ChildrenTransitions="{StaticResource GeneralAnimations}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    
+                </Grid>
             </ScrollViewer>
         </Grid>
 

@@ -37,6 +37,7 @@ namespace KeischProvisor
     public partial class App : Application
     {
         public Window? _window;
+        internal static string AppName = "KeischProvisor";
         internal static string AppVersion = "Version 1.0";
         internal static Settings AppSettings = SettingsManager.LoadSettings();
         internal static ResourceManager AppResourceManager = new ResourceManager();

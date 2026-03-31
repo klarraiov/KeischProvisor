@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using System.Text;
 using System.ComponentModel;
 using Windows.Storage.Pickers.Provider;
+using CommunityToolkit.WinUI.Controls;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
@@ -37,6 +38,13 @@ public sealed partial class MainPage : Page
         InitializeComponent();
         this.Loaded += InitializeSettings;
         NavigationCacheMode = NavigationCacheMode.Required;
+    }
+
+    protected override void OnNavigatedTo(NavigationEventArgs e)
+    {
+        base.OnNavigatedTo(e);
+        ((MainWindow)((App)App.Current!)._window!).AppTitleBar.IsBackButtonVisible = false;
+        ((App.Current as App)!._window!.SystemBackdrop as MicaBackdrop)!.Kind = Microsoft.UI.Composition.SystemBackdrops.MicaKind.BaseAlt;
     }
 
     private void InitializeSettings(object sender, RoutedEventArgs e)
@@ -109,26 +117,30 @@ public sealed partial class MainPage : Page
         MainPage_MainGrid_ChecksumTextBlock .Text = $"0x{currentHSHRFile.Checksum:X16} ({currentHSHRFile.Checksum})";
         MainPage_MainGrid_TopHeadersCountTextBlock.Text = $"{currentHSHRFile.TopHeadersCount}";
 
-        //int previousRowCount = testui.RowDefinitions.Count;
+        int previousRowCount = testui.RowDefinitions.Count;
         App.Current.Resources.TryGetValue("GeneralAnimations", out object transistion);
         for (int i = 0; i < currentHSHRFile.TopHeadersCount; i++)
         {
             RowDefinition rowDefinition = new RowDefinition { Height = GridLength.Auto };
-            //testui.RowDefinitions.Add(rowDefinition);
+            testui.RowDefinitions.Add(rowDefinition);
 
-            StackPanel sp = new StackPanel
+            SettingsCard sp = new SettingsCard //very performance degradation but assertive?
             {
-                Margin = new Thickness(10),
-                ChildrenTransitions = (TransitionCollection)transistion,
-                Children =
+                Header = $"Top Header {i}",
+                Content = new TextBlock
                 {
-                    new Expander
-                    {
-                        Content = new TextBlock{Text = $"Header {i}"},
-                    }
-                }
+                    Text = $"NameHash: 0x{currentHSHRFile.MainIndex[i].NameHash:X8}, DataOffset: 0x{currentHSHRFile.MainIndex[i].DataOffset:X8}",
+                },
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Top,
+                IsClickEnabled = true,
+                Margin = new Thickness(0,0,0,4)
             };
-            //Grid.SetRow(sp, previousRowCount + i);
+            sp.Click += (sender, e) => 
+            { ((App.Current as App)!._window as MainWindow)!.RequestPageTransition(typeof(TopHeaderDetailPage), null!, new SlideNavigationTransitionInfo { Effect = SlideNavigationTransitionEffect.FromRight}); };
+            Grid.SetColumn(sp, 0);
+
+            Grid.SetRow(sp, previousRowCount + i);
             testui.Children.Add(sp);
         }
     }
