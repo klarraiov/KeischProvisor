@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid>
-        <TextBlock Text="TopHeaderDetailPage" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
+    <Grid Margin="40 20 40 20">
+        <TextBlock x:Uid="TopHeaderDetailPage_Title" x:Name="TopHeaderDetailPage_Title" Text="Details of" FontWeight="SemiBold" FontSize="40"></TextBlock>
     </Grid>
 </Page>

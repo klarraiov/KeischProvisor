@@ -81,6 +81,7 @@
 
                     <!--About-->
                     <communitytoolkit:SettingsExpander Header="KeischProvisor" Description="© 2026 klarraiov. All rights reserved.">
+
                         <communitytoolkit:SettingsExpander.HeaderIcon>
                             <ImageIcon Source="/Assets/LockScreenLogo.png" />
                         </communitytoolkit:SettingsExpander.HeaderIcon>
@@ -88,8 +89,6 @@
                         <TextBlock IsTextSelectionEnabled="True" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind app:App.AppVersion}" FontSize="12"/>
 
                         <communitytoolkit:SettingsExpander.Items>
-
-
                             <communitytoolkit:SettingsCard ContentAlignment="Left">
                                 <StackPanel>
                                     <TextBlock Text="References"/>
@@ -106,7 +105,6 @@
                         </communitytoolkit:SettingsExpander.Items>
                     </communitytoolkit:SettingsExpander>
                 </StackPanel>
-                
             </StackPanel>
         </Grid>
     </ScrollViewer>

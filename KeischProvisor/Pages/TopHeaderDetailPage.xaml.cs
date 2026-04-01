@@ -5,8 +5,10 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Respectre.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -34,6 +36,20 @@ namespace KeischProvisor.Pages
 
             ((MainWindow)((App)App.Current!)._window!).AppTitleBar.IsBackButtonVisible = true;
             ((App.Current as App)!._window!.SystemBackdrop as MicaBackdrop)!.Kind = Microsoft.UI.Composition.SystemBackdrops.MicaKind.Base;
+
+            Debug.WriteLine(((KeischProvisor.Pages.MainPage.HSHRSync)e.Parameter).MainIndex.NameHash);
+            Debug.WriteLine(((KeischProvisor.Pages.MainPage.HSHRSync)e.Parameter).MainIndex.DataOffset);
+            Debug.WriteLine(((KeischProvisor.Pages.MainPage.HSHRSync)e.Parameter).Data.AllDataSize);
+
+            InitializeView(e);
+        }
+
+        private void InitializeView(NavigationEventArgs e)
+        {
+            //App.AppResourceManager.MainResourceMap.GetValue("Resources/TopHeaderDetailPage_Title").ValueAsString
+            string name = $"0x{((KeischProvisor.Pages.MainPage.HSHRSync)e.Parameter).MainIndex.NameHash:X8}";
+            TopHeaderDetailPage_Title.Text = string.Format(TopHeaderDetailPage_Title.Text, name);
+
         }
     }
 }

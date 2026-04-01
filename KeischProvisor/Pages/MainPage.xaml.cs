@@ -22,6 +22,7 @@ using System.Text;
 using System.ComponentModel;
 using Windows.Storage.Pickers.Provider;
 using CommunityToolkit.WinUI.Controls;
+using Respectre.Utils;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
@@ -33,6 +34,7 @@ namespace KeischProvisor.Pages;
 public sealed partial class MainPage : Page
 {
     private Respectre.Utils.HSHRFile? currentHSHRFile;
+    internal sealed record HSHRSync(HSHRIndex MainIndex, HSHRData Data);
     public MainPage()
     {
         InitializeComponent();
@@ -79,7 +81,7 @@ public sealed partial class MainPage : Page
 
         if (result != null)
         {
-            StatusBarText.Text = string.Format(App.AppResourceManager.MainResourceMap.GetValue("Resources/Runtime_MainPage_StatusBarTextBlock_FileOpened").ValueAsString, result.Path);
+            StatusBarText.Text = string.Format(App.AppResourceManager.MainResourceMap.GetValue("Resources/MainPage_StatusBarTextBlock_FileOpened").ValueAsString, result.Path);
             await InitializeCacheElement(result.Path);
         }
     }
@@ -90,7 +92,7 @@ public sealed partial class MainPage : Page
         currentHSHRFile = null;
 
         currentHSHRFile = new Respectre.Utils.HSHRFile(filepath);
-        string statusFormat = App.AppResourceManager.MainResourceMap.GetValue("Resources/Runtime_MainPage_StatusBarTextBlock_HSHRFileStatus").ValueAsString;
+        string statusFormat = App.AppResourceManager.MainResourceMap.GetValue("Resources/MainPage_StatusBarTextBlock_HSHRFileStatus").ValueAsString;
         await Task.Run(() =>
         {
             currentHSHRFile.ScanStructure(status =>
@@ -106,7 +108,7 @@ public sealed partial class MainPage : Page
             {
                 StatusBarText.Text = string.Format(
                     App.AppResourceManager.MainResourceMap
-                        .GetValue("Resources/Runtime_MainPage_StatusBarTextBlock_FileOpened")
+                        .GetValue("Resources/MainPage_StatusBarTextBlock_FileOpened")
                         .ValueAsString,
                     filepath);
             });
@@ -114,34 +116,48 @@ public sealed partial class MainPage : Page
 
         MainPage_MainGrid_SignatureTextBlock.Text = Encoding.UTF8.GetString(BitConverter.GetBytes(currentHSHRFile.Signature));
         MainPage_MainGrid_BuildTextBlock.Text = $"{currentHSHRFile.Version} ({currentHSHRFile.VersionMajor}.{currentHSHRFile.VersionMinor})";
-        MainPage_MainGrid_ChecksumTextBlock .Text = $"0x{currentHSHRFile.Checksum:X16} ({currentHSHRFile.Checksum})";
+        MainPage_MainGrid_ChecksumTextBlock.Text = $"0x{currentHSHRFile.Checksum:X16} ({currentHSHRFile.Checksum})";
         MainPage_MainGrid_TopHeadersCountTextBlock.Text = $"{currentHSHRFile.TopHeadersCount}";
 
         int previousRowCount = testui.RowDefinitions.Count;
         App.Current.Resources.TryGetValue("GeneralAnimations", out object transistion);
         for (int i = 0; i < currentHSHRFile.TopHeadersCount; i++)
         {
-            RowDefinition rowDefinition = new RowDefinition { Height = GridLength.Auto };
-            testui.RowDefinitions.Add(rowDefinition);
+            int index = i;
 
-            SettingsCard sp = new SettingsCard //very performance degradation but assertive?
+            await Task.Run(() =>
             {
-                Header = $"Top Header {i}",
-                Content = new TextBlock
+                DispatcherQueue.TryEnqueue(() =>
                 {
-                    Text = $"NameHash: 0x{currentHSHRFile.MainIndex[i].NameHash:X8}, DataOffset: 0x{currentHSHRFile.MainIndex[i].DataOffset:X8}",
-                },
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Top,
-                IsClickEnabled = true,
-                Margin = new Thickness(0,0,0,4)
-            };
-            sp.Click += (sender, e) => 
-            { ((App.Current as App)!._window as MainWindow)!.RequestPageTransition(typeof(TopHeaderDetailPage), null!, new SlideNavigationTransitionInfo { Effect = SlideNavigationTransitionEffect.FromRight}); };
-            Grid.SetColumn(sp, 0);
+                    RowDefinition rowDefinition = new RowDefinition { Height = GridLength.Auto };
+                    testui.RowDefinitions.Add(rowDefinition);
 
-            Grid.SetRow(sp, previousRowCount + i);
-            testui.Children.Add(sp);
+                    SettingsCard sp = new SettingsCard
+                    {
+                        Header = $"Top Header {index}",
+                        Content = new TextBlock
+                        {
+                            Text = $"NameHash: 0x{currentHSHRFile.MainIndex[index].NameHash:X8}, DataOffset: 0x{currentHSHRFile.MainIndex[index].DataOffset:X8}",
+                        },
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        VerticalAlignment = VerticalAlignment.Top,
+                        IsClickEnabled = true,
+                        Margin = new Thickness(0, 0, 0, 4),
+                        BorderThickness = new Thickness(0)
+                    };
+
+                    sp.Click += (sender, e) =>
+                    {
+                        var Pairing = new HSHRSync(currentHSHRFile.MainIndex[index], currentHSHRFile.Data[index]);
+                        ((App.Current as App)!._window as MainWindow)!.RequestPageTransition(typeof(TopHeaderDetailPage), Pairing, new SlideNavigationTransitionInfo { Effect = SlideNavigationTransitionEffect.FromRight });
+                    };
+
+                    Grid.SetColumn(sp, 0);
+                    Grid.SetRow(sp, previousRowCount + index);
+                    testui.Children.Add(sp);
+                });
+            });
         }
     }
 }
+
