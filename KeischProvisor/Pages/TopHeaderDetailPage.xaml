@@ -6,9 +6,72 @@
     xmlns:local="using:KeischProvisor.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:tk="using:CommunityToolkit.WinUI.Controls"
+    xmlns:tkwinui="using:CommunityToolkit.WinUI"
     mc:Ignorable="d">
 
-    <Grid Margin="40 20 40 20">
-        <TextBlock x:Uid="TopHeaderDetailPage_Title" x:Name="TopHeaderDetailPage_Title" Text="Details of" FontWeight="SemiBold" FontSize="40"></TextBlock>
+    <Grid Margin="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Margin="40 20 40 10" Grid.Row="0" ChildrenTransitions="{StaticResource GeneralAnimations}" Orientation="Vertical" >
+            <TextBlock x:Uid="TopHeaderDetailPage_Title" x:Name="TopHeaderDetailPage_Title" Text="Details of" FontWeight="SemiBold" FontSize="40"></TextBlock>
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Spacing="20" Orientation="Vertical" Margin="40 00 40 20" ChildrenTransitions="{StaticResource GeneralAnimations}">
+                <StackPanel ChildrenTransitions="{StaticResource GeneralAnimations}">
+                    <TextBlock x:Uid="TopHeaderDetailPage_Subtitle_Properties" x:Name="TopHeaderDetailPage_Subtitle_Properties" Text="Properties" FontWeight="SemiBold" FontSize="24"></TextBlock>
+                    <StackPanel ChildrenTransitions="{StaticResource GeneralAnimations}">
+                        <TextBlock x:Uid="TopHeaderDetailPage_HSHROverallPropertiesTextBlock" FontWeight="SemiBold" Margin="0 0 0 4"></TextBlock>
+                        <tk:SettingsExpander x:Name="TopHeaderDetailPage_PropertiesSummarySettingsExpander" x:Uid="TopHeaderDetailPage_PropertiesSummarySettingsExpander" HeaderIcon="{tkwinui:FontIcon Glyph=&#xE73E;}" IsExpanded="True">
+                            <tk:SettingsExpander.Items>
+                                <tk:SettingsCard x:Name="TopHeaderDetailPage_PropertiesSettingsCard_ResolvedName" x:Uid="TopHeaderDetailPage_PropertiesSettingsCard_ResolvedName" Header="Resolved Name" Content="N/A"/>
+                                <tk:SettingsCard x:Name="TopHeaderDetailPage_PropertiesSettingsCard_NameHashHex" x:Uid="TopHeaderDetailPage_PropertiesSettingsCard_NameHashHex" Header="Name Hash (Hex)" Content="N/A"/>
+                                <tk:SettingsCard x:Name="TopHeaderDetailPage_PropertiesSettingsCard_DataOffsetHex" x:Uid="TopHeaderDetailPage_PropertiesSettingsCard_DataOffsetHex" Header="Data Offset (Hex)" Content="N/A"/>
+                                <tk:SettingsCard x:Name="TopHeaderDetailPage_PropertiesSettingsCard_HeaderSizeBytes" x:Uid="TopHeaderDetailPage_PropertiesSettingsCard_HeaderSizeBytes" Header="Header Size" Content="N/A"/>
+                                <tk:SettingsCard x:Name="TopHeaderDetailPage_PropertiesSettingsCard_AllDataSizeBytes" x:Uid="TopHeaderDetailPage_PropertiesSettingsCard_AllDataSizeBytes" Header="All Data Size" Content="N/A"/>
+                                <tk:SettingsCard x:Name="TopHeaderDetailPage_PropertiesSettingsCard_SubheaderConsistency" x:Uid="TopHeaderDetailPage_PropertiesSettingsCard_SubheaderConsistency" Header="Subheader Consistency" Content="N/A"/>
+                            </tk:SettingsExpander.Items>
+                        </tk:SettingsExpander>
+
+                    </StackPanel>
+                </StackPanel>
+
+
+
+                <StackPanel ChildrenTransitions="{StaticResource GeneralAnimations}">
+                    <TextBlock x:Uid="TopHeaderDetailPage_Subtitle_RawProperties" x:Name="TopHeaderDetailPage_Subtitle_RawProperties" Text="Raw Properties" FontWeight="SemiBold" FontSize="24"></TextBlock>
+                    <StackPanel ChildrenTransitions="{StaticResource GeneralAnimations}" Spacing="10">
+                        <StackPanel ChildrenTransitions="{StaticResource GeneralAnimations}" >
+                            <TextBlock x:Uid="TopHeaderDetailPage_HSHRMainIndexTextBlock" FontWeight="SemiBold" Margin="0 0 0 4"></TextBlock>
+                            <tk:SettingsExpander x:Name="TopHeaderDetailPage_HSHRMainIndexSettingsExpander" x:Uid="TopHeaderDetailPage_HSHRMainIndexSettingsExpander" HeaderIcon="{tkwinui:FontIcon Glyph=&#xE7C3;}">
+                                <tk:SettingsExpander.Items>
+                                    <tk:SettingsCard x:Name="TopHeaderDetailPage_HSHRMainIndexSettingsCard_NameHash" x:Uid="TopHeaderDetailPage_HSHRMainIndexSettingsCard_NameHash" Header="Name Hash" Content="N/A"/>
+                                    <tk:SettingsCard x:Name="TopHeaderDetailPage_HSHRMainIndexSettingsCard_DataOffset" x:Uid="TopHeaderDetailPage_HSHRMainIndexSettingsCard_DataOffset" Header="DataOffset" Content="N/A"/>
+                                </tk:SettingsExpander.Items>
+                            </tk:SettingsExpander>
+                        </StackPanel>
+                        <StackPanel ChildrenTransitions="{StaticResource GeneralAnimations}" >
+                            <TextBlock x:Uid="TopHeaderDetailPage_HSHRDataTextBlock" FontWeight="SemiBold" Margin="0 0 0 4"></TextBlock>
+                            <tk:SettingsExpander x:Name="TopHeaderDetailPage_HSHRDataSettingsExpander" x:Uid="TopHeaderDetailPage_HSHRDataSettingsExpander" HeaderIcon="{tkwinui:FontIcon Glyph=&#xE7C3;}" IsExpanded="True">
+                                <tk:SettingsExpander.Items>
+                                    <tk:SettingsCard x:Name="TopHeaderDetailPage_HSHRDataSettingsCard_CSTT" x:Uid="TopHeaderDetailPage_HSHRDataSettingsCard_CSTT" Header="CSTT" Content="N/A"/>
+                                    <tk:SettingsCard x:Name="TopHeaderDetailPage_HSHRDataSettingsCard_HeaderSize" x:Uid="TopHeaderDetailPage_HSHRDataSettingsCard_HeaderSize" Header="HeaderSize" Content="N/A"/>
+                                    <tk:SettingsCard x:Name="TopHeaderDetailPage_HSHRDataSettingsCard_AllDataSize" x:Uid="TopHeaderDetailPage_HSHRDataSettingsCard_AllDataSize" Header="AllDataSize" Content="N/A"/>
+                                    <tk:SettingsCard x:Name="TopHeaderDetailPage_HSHRDataSettingsCard_Header" x:Uid="TopHeaderDetailPage_HSHRDataSettingsCard_Header" Header="Header" IsClickEnabled="True"/>
+                                    <tk:SettingsCard x:Name="TopHeaderDetailPage_HSHRDataSettingsCard_SubheadersCount" x:Uid="TopHeaderDetailPage_HSHRDataSettingsCard_SubheadersCount" Header="SubheadersCount" Content="N/A"/>
+                                    <tk:SettingsCard x:Name="TopHeaderDetailPage_HSHRDataSettingsCard_IDST" x:Uid="TopHeaderDetailPage_HSHRDataSettingsCard_IDST" Header="IDST" Content="N/A"/>
+                                    <tk:SettingsCard x:Name="TopHeaderDetailPage_HSHRDataSettingsCard_SubheadersIndex" x:Uid="TopHeaderDetailPage_HSHRDataSettingsCard_SubheadersIndex" Header="Subheader Index List" IsClickEnabled="True"/>
+                                    <tk:SettingsCard x:Name="TopHeaderDetailPage_HSHRDataSettingsCard_IDEN" x:Uid="TopHeaderDetailPage_HSHRDataSettingsCard_IDEN" Header="IDEN" Content="N/A"/>
+                                    <tk:SettingsCard x:Name="TopHeaderDetailPage_HSHRDataSettingsCard_Subheaders" x:Uid="TopHeaderDetailPage_HSHRDataSettingsCard_Subheaders" Header="Subheaders" IsClickEnabled="True"/>
+                                </tk:SettingsExpander.Items>
+                            </tk:SettingsExpander>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Page>

@@ -34,7 +34,7 @@ namespace KeischProvisor.Pages;
 public sealed partial class MainPage : Page
 {
     private Respectre.Utils.HSHRFile? currentHSHRFile;
-    internal sealed record HSHRSync(HSHRIndex MainIndex, HSHRData Data);
+    internal sealed record HSHRSync(HSHRFile HSHRFile, int index);
     public MainPage()
     {
         InitializeComponent();
@@ -124,8 +124,9 @@ public sealed partial class MainPage : Page
         for (int i = 0; i < currentHSHRFile.TopHeadersCount; i++)
         {
             int index = i;
-
-            await Task.Run(() =>
+            string resolvedName = string.Empty;
+            Respectre.Utils.HSHRFile.namehashPairs.TryGetValue(currentHSHRFile.MainIndex[index].NameHash, out resolvedName);
+        await Task.Run(() =>
             {
                 DispatcherQueue.TryEnqueue(() =>
                 {
@@ -137,7 +138,7 @@ public sealed partial class MainPage : Page
                         Header = $"Top Header {index}",
                         Content = new TextBlock
                         {
-                            Text = $"NameHash: 0x{currentHSHRFile.MainIndex[index].NameHash:X8}, DataOffset: 0x{currentHSHRFile.MainIndex[index].DataOffset:X8}",
+                            Text = $"{resolvedName}",
                         },
                         HorizontalAlignment = HorizontalAlignment.Stretch,
                         VerticalAlignment = VerticalAlignment.Top,
@@ -148,7 +149,7 @@ public sealed partial class MainPage : Page
 
                     sp.Click += (sender, e) =>
                     {
-                        var Pairing = new HSHRSync(currentHSHRFile.MainIndex[index], currentHSHRFile.Data[index]);
+                        var Pairing = new HSHRSync(currentHSHRFile, index);
                         ((App.Current as App)!._window as MainWindow)!.RequestPageTransition(typeof(TopHeaderDetailPage), Pairing, new SlideNavigationTransitionInfo { Effect = SlideNavigationTransitionEffect.FromRight });
                     };
 

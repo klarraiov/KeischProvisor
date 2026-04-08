@@ -205,6 +205,84 @@
     <value>About</value>
   </data>
   <data name="TopHeaderDetailPage_Title.Text" xml:space="preserve">
-    <value>Details of {0}</value>
+    <value>Details of Top Header {0}</value>
+  </data>
+  <data name="TopHeaderDetailPage_HSHRMainIndexSettingsExpander.Header" xml:space="preserve">
+    <value>Details of MainIndex {0}</value>
+  </data>
+  <data name="TopHeaderDetailPage_HSHRMainIndexTextBlock.Text" xml:space="preserve">
+    <value>Details in Main Index</value>
+  </data>
+  <data name="TopHeaderDetailPage_HSHRDataTextBlock.Text" xml:space="preserve">
+    <value>Details in Data</value>
+  </data>
+  <data name="TopHeaderDetailPage_HSHRDataSettingsExpander.Header" xml:space="preserve">
+    <value>Details of Data {0}</value>
+  </data>
+  <data name="TopHeaderDetailPage_HSHRDataSettingsCard_CSTT.Header" xml:space="preserve">
+    <value>CSTT Marker</value>
+  </data>
+  <data name="TopHeaderDetailPage_HSHRDataSettingsCard_HeaderSize.Header" xml:space="preserve">
+    <value>Header size</value>
+  </data>
+  <data name="TopHeaderDetailPage_HSHRDataSettingsCard_AllDataSize.Header" xml:space="preserve">
+    <value>All data size</value>
+  </data>
+  <data name="TopHeaderDetailPage_HSHRDataSettingsCard_Header.Header" xml:space="preserve">
+    <value>Header</value>
+  </data>
+  <data name="TopHeaderDetailPage_HSHRDataSettingsCard_SubheadersCount.Header" xml:space="preserve">
+    <value>Subheaders count</value>
+  </data>
+  <data name="TopHeaderDetailPage_HSHRDataSettingsCard_IDST.Header" xml:space="preserve">
+    <value>IDST Marker</value>
+  </data>
+  <data name="TopHeaderDetailPage_HSHRDataSettingsCard_SubheadersIndex.Header" xml:space="preserve">
+    <value>Subheaders index</value>
+  </data>
+  <data name="TopHeaderDetailPage_HSHRDataSettingsCard_IDEN.Header" xml:space="preserve">
+    <value>IDEN Marker</value>
+  </data>
+  <data name="TopHeaderDetailPage_HSHRDataSettingsCard_Subheaders.Header" xml:space="preserve">
+    <value>Subheaders</value>
+  </data>
+  <data name="TopHeaderDetailPage_HSHRMainIndexSettingsCard_NameHash.Header" xml:space="preserve">
+    <value>Hashed name</value>
+  </data>
+  <data name="TopHeaderDetailPage_HSHRMainIndexSettingsCard_DataOffset.Header" xml:space="preserve">
+    <value>Data offset</value>
+  </data>
+  <data name="TopHeaderDetailPage_Subtitle_RawInformation.Text" xml:space="preserve">
+    <value>Raw Information</value>
+  </data>
+  <data name="TopHeaderDetailPage_Subtitle_Properties.Text" xml:space="preserve">
+    <value>Properties</value>
+  </data>
+  <data name="TopHeaderDetailPage_Subtitle_RawProperties.Text" xml:space="preserve">
+    <value>Raw Properties</value>
+  </data>
+  <data name="TopHeaderDetailPage_PropertiesSummarySettingsExpander.Header" xml:space="preserve">
+    <value>Computed Properties</value>
+  </data>
+  <data name="TopHeaderDetailPage_PropertiesSettingsCard_ResolvedName.Header" xml:space="preserve">
+    <value>Resolved Name</value>
+  </data>
+  <data name="TopHeaderDetailPage_PropertiesSettingsCard_NameHashHex.Header" xml:space="preserve">
+    <value>Name Hash (Hex)</value>
+  </data>
+  <data name="TopHeaderDetailPage_PropertiesSettingsCard_DataOffsetHex.Header" xml:space="preserve">
+    <value>Data Offset (Hex)</value>
+  </data>
+  <data name="TopHeaderDetailPage_PropertiesSettingsCard_HeaderSizeBytes.Header" xml:space="preserve">
+    <value>Header Size</value>
+  </data>
+  <data name="TopHeaderDetailPage_PropertiesSettingsCard_AllDataSizeBytes.Header" xml:space="preserve">
+    <value>All Data Size</value>
+  </data>
+  <data name="TopHeaderDetailPage_PropertiesSettingsCard_SubheaderConsistency.Header" xml:space="preserve">
+    <value>Subheader Consistency</value>
+  </data>
+  <data name="TopHeaderDetailPage_HSHROverallPropertiesTextBlock.Text" xml:space="preserve">
+    <value>Properties calculated by KeischProvisor</value>
   </data>
 </root>

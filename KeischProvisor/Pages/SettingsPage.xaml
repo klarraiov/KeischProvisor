@@ -105,6 +105,11 @@
                         </communitytoolkit:SettingsExpander.Items>
                     </communitytoolkit:SettingsExpander>
                 </StackPanel>
+
+                <StackPanel ChildrenTransitions="{StaticResource GeneralAnimations}">
+                    <TextBlock x:Uid="SettingsPage_DebugTextBlock" Text="Debug" FontWeight="SemiBold" Margin="0 12 0 4"></TextBlock>
+                    <communitytoolkit:SettingsCard Header="ExperimentalPage" IsClickEnabled="True" Click="SettingsCard_Click"></communitytoolkit:SettingsCard>
+                </StackPanel>
             </StackPanel>
         </Grid>
     </ScrollViewer>

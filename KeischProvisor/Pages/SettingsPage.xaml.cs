@@ -126,4 +126,10 @@ public sealed partial class SettingsPage : Page, INotifyPropertyChanged
     {
         ((App)App.Current).RestartApp();
     }
+
+    private void SettingsCard_Click(object sender, RoutedEventArgs e)
+    {
+        MainWindow mainWindow = (MainWindow)((App)Application.Current)._window!;
+        mainWindow.RequestPageTransition(typeof(ExperimentalPage), null!, new SuppressNavigationTransitionInfo());
+    }
 }
