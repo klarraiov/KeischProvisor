@@ -190,7 +190,7 @@
     <value>Build: </value>
   </data>
   <data name="MainPage_MainGrid_ChecksumTextBlock.Text" xml:space="preserve">
-    <value>Checksum: </value>
+    <value>Validation Token: </value>
   </data>
   <data name="MainPage_MainGrid_TopHeadersCountTextBlock.Text" xml:space="preserve">
     <value>Top Headers Count: </value>
@@ -279,10 +279,19 @@
   <data name="TopHeaderDetailPage_PropertiesSettingsCard_AllDataSizeBytes.Header" xml:space="preserve">
     <value>All Data Size</value>
   </data>
-  <data name="TopHeaderDetailPage_PropertiesSettingsCard_SubheaderConsistency.Header" xml:space="preserve">
-    <value>Subheader Consistency</value>
+  <data name="TopHeaderDetailPage_PropertiesSettingsCard_PropertiesValidationResultTrue" xml:space="preserve">
+    <value>Valid</value>
   </data>
   <data name="TopHeaderDetailPage_HSHROverallPropertiesTextBlock.Text" xml:space="preserve">
     <value>Properties calculated by KeischProvisor</value>
+  </data>
+  <data name="TopHeaderDetailPage_PropertiesSettingsCard_PropertiesValidationResultFalse" xml:space="preserve">
+    <value>Invalid</value>
+  </data>
+  <data name="TopHeaderDetailPage_PropertiesSettingsCard_SubheaderConsistency.Header" xml:space="preserve">
+    <value>Subheader Consistency</value>
+  </data>
+  <data name="MainPage_TopHeaderSettingsCard_Header" xml:space="preserve">
+    <value>Top Header {0}</value>
   </data>
 </root>

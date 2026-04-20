@@ -16,6 +16,7 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" ChildrenTransitions="{StaticResource GeneralAnimations}">
             <tk:SettingsCard Header="GameFileList" Click="SettingsCard_Click" IsClickEnabled="True"></tk:SettingsCard>
+            <tk:SettingsCard Header="testopen" Click="testopen" IsClickEnabled="True"></tk:SettingsCard>
         </StackPanel>
 
         <StackPanel Grid.Row="1" ChildrenTransitions="{StaticResource GeneralAnimations}">

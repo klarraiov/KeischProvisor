@@ -190,10 +190,10 @@
     <value>버전: </value>
   </data>
   <data name="MainPage_MainGrid_ChecksumTextBlock.Text" xml:space="preserve">
-    <value>유효성 검증 값: </value>
+    <value>유효성 토큰: </value>
   </data>
   <data name="MainPage_MainGrid_TopHeadersCountTextBlock.Text" xml:space="preserve">
-    <value>루트 헤더 개수: </value>
+    <value>최상위 헤더 개수: </value>
   </data>
   <data name="MainPage_StatusBarTextBlock_HSHRFileStatus" xml:space="preserve">
     <value>[HSHRFile] {0}에서 {3} {1}/{2} 읽는중</value>
@@ -279,10 +279,19 @@
   <data name="TopHeaderDetailPage_PropertiesSettingsCard_AllDataSizeBytes.Header" xml:space="preserve">
     <value>전체 데이터 크기</value>
   </data>
-  <data name="TopHeaderDetailPage_PropertiesSettingsCard_SubheaderConsistency.Header" xml:space="preserve">
-    <value>하위 헤더 일관성</value>
+  <data name="TopHeaderDetailPage_PropertiesSettingsCard_PropertiesValidationResultTrue" xml:space="preserve">
+    <value>유효함</value>
   </data>
   <data name="TopHeaderDetailPage_HSHROverallPropertiesTextBlock.Text" xml:space="preserve">
     <value>KeischProvisor에 의해 계산된 속성</value>
+  </data>
+  <data name="TopHeaderDetailPage_PropertiesSettingsCard_PropertiesValidationResultFalse" xml:space="preserve">
+    <value>유효하지 않음</value>
+  </data>
+  <data name="TopHeaderDetailPage_PropertiesSettingsCard_SubheaderConsistency.Header" xml:space="preserve">
+    <value>하위 헤더 일관성</value>
+  </data>
+  <data name="MainPage_TopHeaderSettingsCard_Header" xml:space="preserve">
+    <value>최상위 헤더 {0}</value>
   </data>
 </root>

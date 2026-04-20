@@ -115,7 +115,7 @@ public sealed partial class MainPage : Page
         });
 
         MainPage_MainGrid_SignatureTextBlock.Text = Encoding.UTF8.GetString(BitConverter.GetBytes(currentHSHRFile.Signature));
-        MainPage_MainGrid_BuildTextBlock.Text = $"{currentHSHRFile.Version} ({currentHSHRFile.VersionMajor}.{currentHSHRFile.VersionMinor})";
+        MainPage_MainGrid_BuildTextBlock.Text = $"{currentHSHRFile.VersionMajor}.{currentHSHRFile.VersionMinor} ({currentHSHRFile.Version})";
         MainPage_MainGrid_ChecksumTextBlock.Text = $"0x{currentHSHRFile.Checksum:X16} ({currentHSHRFile.Checksum})";
         MainPage_MainGrid_TopHeadersCountTextBlock.Text = $"{currentHSHRFile.TopHeadersCount}";
 
@@ -124,8 +124,9 @@ public sealed partial class MainPage : Page
         for (int i = 0; i < currentHSHRFile.TopHeadersCount; i++)
         {
             int index = i;
-            string resolvedName = string.Empty;
-            Respectre.Utils.HSHRFile.namehashPairs.TryGetValue(currentHSHRFile.MainIndex[index].NameHash, out resolvedName);
+            string? resolvedName = string.Empty;
+            string headername = string.Format(App.AppResourceManager.MainResourceMap.GetValue("Resources/MainPage_TopHeaderSettingsCard_Header").ValueAsString, index);
+            HSHRFile.namehashPairs.TryGetValue(currentHSHRFile.MainIndex[index].NameHash, out resolvedName);
         await Task.Run(() =>
             {
                 DispatcherQueue.TryEnqueue(() =>
@@ -135,18 +136,18 @@ public sealed partial class MainPage : Page
 
                     SettingsCard sp = new SettingsCard
                     {
-                        Header = $"Top Header {index}",
+                        Header = $"{headername}",
                         Content = new TextBlock
                         {
                             Text = $"{resolvedName}",
+                            IsTextSelectionEnabled = true,
                         },
                         HorizontalAlignment = HorizontalAlignment.Stretch,
                         VerticalAlignment = VerticalAlignment.Top,
                         IsClickEnabled = true,
                         Margin = new Thickness(0, 0, 0, 4),
-                        BorderThickness = new Thickness(0)
+                        BorderThickness = new Thickness(0),
                     };
-
                     sp.Click += (sender, e) =>
                     {
                         var Pairing = new HSHRSync(currentHSHRFile, index);

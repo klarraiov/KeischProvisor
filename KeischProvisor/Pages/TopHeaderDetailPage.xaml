@@ -46,7 +46,7 @@
                     <StackPanel ChildrenTransitions="{StaticResource GeneralAnimations}" Spacing="10">
                         <StackPanel ChildrenTransitions="{StaticResource GeneralAnimations}" >
                             <TextBlock x:Uid="TopHeaderDetailPage_HSHRMainIndexTextBlock" FontWeight="SemiBold" Margin="0 0 0 4"></TextBlock>
-                            <tk:SettingsExpander x:Name="TopHeaderDetailPage_HSHRMainIndexSettingsExpander" x:Uid="TopHeaderDetailPage_HSHRMainIndexSettingsExpander" HeaderIcon="{tkwinui:FontIcon Glyph=&#xE7C3;}">
+                            <tk:SettingsExpander x:Name="TopHeaderDetailPage_HSHRMainIndexSettingsExpander" x:Uid="TopHeaderDetailPage_HSHRMainIndexSettingsExpander" IsExpanded="True" HeaderIcon="{tkwinui:FontIcon Glyph=&#xE7C3;}">
                                 <tk:SettingsExpander.Items>
                                     <tk:SettingsCard x:Name="TopHeaderDetailPage_HSHRMainIndexSettingsCard_NameHash" x:Uid="TopHeaderDetailPage_HSHRMainIndexSettingsCard_NameHash" Header="Name Hash" Content="N/A"/>
                                     <tk:SettingsCard x:Name="TopHeaderDetailPage_HSHRMainIndexSettingsCard_DataOffset" x:Uid="TopHeaderDetailPage_HSHRMainIndexSettingsCard_DataOffset" Header="DataOffset" Content="N/A"/>
@@ -60,12 +60,12 @@
                                     <tk:SettingsCard x:Name="TopHeaderDetailPage_HSHRDataSettingsCard_CSTT" x:Uid="TopHeaderDetailPage_HSHRDataSettingsCard_CSTT" Header="CSTT" Content="N/A"/>
                                     <tk:SettingsCard x:Name="TopHeaderDetailPage_HSHRDataSettingsCard_HeaderSize" x:Uid="TopHeaderDetailPage_HSHRDataSettingsCard_HeaderSize" Header="HeaderSize" Content="N/A"/>
                                     <tk:SettingsCard x:Name="TopHeaderDetailPage_HSHRDataSettingsCard_AllDataSize" x:Uid="TopHeaderDetailPage_HSHRDataSettingsCard_AllDataSize" Header="AllDataSize" Content="N/A"/>
-                                    <tk:SettingsCard x:Name="TopHeaderDetailPage_HSHRDataSettingsCard_Header" x:Uid="TopHeaderDetailPage_HSHRDataSettingsCard_Header" Header="Header" IsClickEnabled="True"/>
+                                    <tk:SettingsCard x:Name="TopHeaderDetailPage_HSHRDataSettingsCard_Header" x:Uid="TopHeaderDetailPage_HSHRDataSettingsCard_Header" Header="Header" IsClickEnabled="True" Click="TopHeaderDetailPage_HSHRDataSettingsCard_Header_Click"/>
                                     <tk:SettingsCard x:Name="TopHeaderDetailPage_HSHRDataSettingsCard_SubheadersCount" x:Uid="TopHeaderDetailPage_HSHRDataSettingsCard_SubheadersCount" Header="SubheadersCount" Content="N/A"/>
                                     <tk:SettingsCard x:Name="TopHeaderDetailPage_HSHRDataSettingsCard_IDST" x:Uid="TopHeaderDetailPage_HSHRDataSettingsCard_IDST" Header="IDST" Content="N/A"/>
-                                    <tk:SettingsCard x:Name="TopHeaderDetailPage_HSHRDataSettingsCard_SubheadersIndex" x:Uid="TopHeaderDetailPage_HSHRDataSettingsCard_SubheadersIndex" Header="Subheader Index List" IsClickEnabled="True"/>
+                                    <tk:SettingsCard x:Name="TopHeaderDetailPage_HSHRDataSettingsCard_SubheadersIndex" x:Uid="TopHeaderDetailPage_HSHRDataSettingsCard_SubheadersIndex" Header="Subheader Index List" IsClickEnabled="True" Click="TopHeaderDetailPage_HSHRDataSettingsCard_SubheadersIndex_Click"/>
                                     <tk:SettingsCard x:Name="TopHeaderDetailPage_HSHRDataSettingsCard_IDEN" x:Uid="TopHeaderDetailPage_HSHRDataSettingsCard_IDEN" Header="IDEN" Content="N/A"/>
-                                    <tk:SettingsCard x:Name="TopHeaderDetailPage_HSHRDataSettingsCard_Subheaders" x:Uid="TopHeaderDetailPage_HSHRDataSettingsCard_Subheaders" Header="Subheaders" IsClickEnabled="True"/>
+                                    <tk:SettingsCard x:Name="TopHeaderDetailPage_HSHRDataSettingsCard_Subheaders" x:Uid="TopHeaderDetailPage_HSHRDataSettingsCard_Subheaders" Header="Subheaders" IsClickEnabled="True" Click="TopHeaderDetailPage_HSHRDataSettingsCard_SubheadersIndex_Click"/>
                                 </tk:SettingsExpander.Items>
                             </tk:SettingsExpander>
                         </StackPanel>

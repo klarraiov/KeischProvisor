@@ -43,7 +43,7 @@ namespace Respectre.Utils
         public List<HSHRIndex> MainIndex { get; set; } = new List<HSHRIndex>();
         public List<HSHRData> Data { get; set; } = new List<HSHRData>();
 
-
+        // Results from Binary
         // 1013.33 -> VersionMajor: 1013, VersionMinor: 33
         public short VersionMajor { get; set; }
         public short VersionMinor { get; set; }
@@ -378,14 +378,14 @@ namespace Respectre.Utils
             if (HSHRBinary.Length < 16) throw new ArgumentException("HSHRBinary must be at least 16 bytes long", nameof(HSHRBinary));
 
             // 0x08 - 0x0F seed
-            byte[] rpfcache = HSHRBinary.ToArray();
-            byte[] seedBytes = BuildSeed(rpfcache[0x10]);
-            ulong seed = BitConverter.ToUInt64(seedBytes);
-            Buffer.BlockCopy(seedBytes, 0, rpfcache, 0x08, 8);
+            byte[] pre_validation = HSHRBinary.ToArray();
+            byte[] seedByte = BuildSeed(pre_validation[0x10]);
+            ulong seed = BitConverter.ToUInt64(seedByte);
+            Buffer.BlockCopy(seedByte, 0, pre_validation, 0x08, 8);
 
             // CityHash64
             CityHash64 cityHash64 = new CityHash64();
-            cityHash64.Compute(rpfcache);
+            cityHash64.Compute(pre_validation);
             ulong h = cityHash64.Value;
 
             // Finalizer
