@@ -53,8 +53,18 @@ namespace KeischProvisor.Pages
             }
 
             currentHSHRSync = e.Parameter as MainPage.HSHRSync;
+            RawHeaderPage_Title.Text = string.Format(RawHeaderPage_Title.Text, currentHSHRSync!.index);
             int i = currentHSHRSync!.index;
-            testui.Text = BitConverter.ToString(currentHSHRSync.HSHRFile.Data[i].Header);
+            var header = currentHSHRSync.HSHRFile.Data[i].Header;
+
+            var hexLines = new List<string>();
+            for (int j = 0; j < header.Length; j += 16)
+            {
+                string x = BitConverter.ToString(header, j, Math.Min(16, header.Length - j)).Replace("-", " ");
+                hexLines.Add(x);
+            }
+
+            testui.Text = string.Join(Environment.NewLine, hexLines);
         }
         //private async void testting()
         //{

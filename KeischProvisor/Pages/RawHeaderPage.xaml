@@ -9,10 +9,45 @@
     mc:Ignorable="d">
 
     <Grid Margin="40 20 40 10">
-        <StackPanel>
-            <TextBlock x:Uid="RawHeaderPage_Title" x:Name="RawHeaderPage_Title" Text="RawHeader X Elite" FontWeight="SemiBold" FontSize="40"></TextBlock>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-            <TextBlock x:Name="testui" TextWrapping="Wrap"></TextBlock>
-        </StackPanel>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" x:Uid="RawHeaderPage_Title" x:Name="RawHeaderPage_Title" Text="PackFile Header of Top Header {0}" FontWeight="SemiBold" FontSize="40"></TextBlock>
+
+            <TextBox x:Name="testui"
+                     Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="1"
+                     Padding="0 0 16 0"
+                     FontFamily="Consolas, Courier New, Courier, Monospace"
+                     AcceptsReturn="True"
+                     TextWrapping="NoWrap"
+                     IsReadOnly="True"
+                     IsSpellCheckEnabled="False"
+                     Background="Transparent"
+                     BorderBrush="Transparent"
+                     ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                     ScrollViewer.VerticalScrollBarVisibility="Visible"
+                     ScrollViewer.IsDeferredScrollingEnabled="True" >
+
+                <TextBox.Resources>
+                    <SolidColorBrush x:Key="TextControlBackground" Color="Transparent" />
+                    <SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="Transparent" />
+                    <SolidColorBrush x:Key="TextControlBackgroundFocused" Color="Transparent" />
+                    <SolidColorBrush x:Key="TextControlBackgroundDisabled" Color="Transparent" />
+
+                    <SolidColorBrush x:Key="TextControlBorderBrush" Color="Transparent" />
+                    <SolidColorBrush x:Key="TextControlBorderBrushPointerOver" Color="Transparent" />
+                    <SolidColorBrush x:Key="TextControlBorderBrushFocused" Color="Transparent" />
+
+                    <Thickness x:Key="TextControlBorderThemeThicknessFocused">0</Thickness>
+                </TextBox.Resources>
+            </TextBox>
+        </Grid>
     </Grid>
 </Page>

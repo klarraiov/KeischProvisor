@@ -294,4 +294,7 @@
   <data name="MainPage_TopHeaderSettingsCard_Header" xml:space="preserve">
     <value>Top Header {0}</value>
   </data>
+  <data name="RawHeaderPage_Title.Text" xml:space="preserve">
+    <value>7FPR Header of Top Header {0}</value>
+  </data>
 </root>

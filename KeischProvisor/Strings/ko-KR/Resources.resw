@@ -294,4 +294,7 @@
   <data name="MainPage_TopHeaderSettingsCard_Header" xml:space="preserve">
     <value>최상위 헤더 {0}</value>
   </data>
+  <data name="RawHeaderPage_Title.Text" xml:space="preserve">
+    <value>최상위 헤더 {0}의 7FPR 헤더</value>
+  </data>
 </root>
