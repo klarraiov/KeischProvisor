@@ -87,6 +87,7 @@ namespace KeischProvisor.Pages
 
         private void TopHeaderDetailPage_HSHRDataSettingsCard_SubheadersIndex_Click(object sender, RoutedEventArgs e)
         {
+            ((App.Current as App)!._window as MainWindow)!.RequestPageTransition(typeof(SubheaderDetailPage), currentHSHRSync!, new SlideNavigationTransitionInfo { Effect = SlideNavigationTransitionEffect.FromRight });
         }
 
         private void TopHeaderDetailPage_HSHRDataSettingsCard_Header_Click(object sender, RoutedEventArgs e)
