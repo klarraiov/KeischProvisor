@@ -6,6 +6,7 @@
     xmlns:local="using:KeischProvisor.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:tk="using:CommunityToolkit.WinUI.Controls"
     mc:Ignorable="d">
 
     <Grid>
@@ -17,12 +18,14 @@
             <TextBlock x:Uid="SubheaderDetailPage_Title" x:Name="SubheaderDetailPage_Title" Text="Subheader Lists for Top Header {0}" FontWeight="SemiBold" FontSize="40"></TextBlock>
         </StackPanel>
 
-        <ScrollViewer Grid.Row="1">
-            <StackPanel Spacing="20" Orientation="Vertical" Margin="40 00 40 20" ChildrenTransitions="{StaticResource GeneralAnimations}">
-                <StackPanel x:Name="testui" ChildrenTransitions="{StaticResource GeneralAnimations}">
-                    
-                </StackPanel>
-            </StackPanel>
-        </ScrollViewer>
+        <ListView Grid.Row="1" Visibility="Visible" ItemsSource="{x:Bind subheaderIndices}" Padding="30 00 30 00" SelectionMode="None" ItemContainerStyle="{StaticResource DefaultListViewItemStyle_Catrified}">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="local:SubheaderIndex">
+                    <StackPanel>
+                        <tk:SettingsCard Header="{x:Bind SettingsCardHeaderName}" Description="{x:Bind SettingsCardDescription}" Margin="0 0 0 2" IsClickEnabled="True" BorderThickness="0"></tk:SettingsCard>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </Page>

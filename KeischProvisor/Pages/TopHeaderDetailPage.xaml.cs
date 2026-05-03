@@ -28,7 +28,7 @@ namespace KeischProvisor.Pages
     /// </summary>
     public sealed partial class TopHeaderDetailPage : Page
     {
-        private MainPage.HSHRSync? currentHSHRSync;
+        private TopHeaderNavigationInfo? currentNavigationInfo;
 
         public TopHeaderDetailPage()
         {
@@ -48,18 +48,18 @@ namespace KeischProvisor.Pages
 
         private void InitializeView(NavigationEventArgs e)
         {
-            if (e.Parameter is not KeischProvisor.Pages.MainPage.HSHRSync)
+            if (e.Parameter is not TopHeaderNavigationInfo)
             {
-                Debug.WriteLine("Invalid parameter. Expected HSHRSync.");
+                Debug.WriteLine("Invalid parameter. Expected TopHeaderNavigationInfo.");
                 return;
             }
-            currentHSHRSync = (MainPage.HSHRSync)e.Parameter;
-            TopHeaderDetailPage_Title.Text = string.Format(TopHeaderDetailPage_Title.Text, currentHSHRSync.index);
-            TopHeaderDetailPage_HSHRMainIndexSettingsExpander.Header = string.Format((string)TopHeaderDetailPage_HSHRMainIndexSettingsExpander.Header, currentHSHRSync.index);
-            TopHeaderDetailPage_HSHRDataSettingsExpander.Header = string.Format((string)TopHeaderDetailPage_HSHRDataSettingsExpander.Header, currentHSHRSync.index);
+            currentNavigationInfo = e.Parameter as TopHeaderNavigationInfo;
+            TopHeaderDetailPage_Title.Text = string.Format(TopHeaderDetailPage_Title.Text, currentNavigationInfo.Index);
+            TopHeaderDetailPage_HSHRMainIndexSettingsExpander.Header = string.Format((string)TopHeaderDetailPage_HSHRMainIndexSettingsExpander.Header, currentNavigationInfo.Index);
+            TopHeaderDetailPage_HSHRDataSettingsExpander.Header = string.Format((string)TopHeaderDetailPage_HSHRDataSettingsExpander.Header, currentNavigationInfo.Index);
 
-            HSHRIndex mainIndex = currentHSHRSync.HSHRFile.MainIndex[currentHSHRSync.index];
-            HSHRData data = currentHSHRSync.HSHRFile.Data[currentHSHRSync.index];
+            HSHRIndex mainIndex = currentNavigationInfo.HSHRFile.MainIndex[currentNavigationInfo.Index];
+            HSHRData data = currentNavigationInfo.HSHRFile.Data[currentNavigationInfo.Index];
 
             string resolvedName = HSHRFile.namehashPairs.TryGetValue(mainIndex.NameHash, out string? name) ? name : "Unknown";
             bool isSubheaderConsistent = data.SubheadersCount == data.SubheaderIndex.Count && data.SubheadersCount == data.Subheader.Count;
@@ -73,26 +73,26 @@ namespace KeischProvisor.Pages
             TopHeaderDetailPage_PropertiesSettingsCard_AllDataSizeBytes.Content = $"{data.AllDataSize} bytes";
             TopHeaderDetailPage_PropertiesSettingsCard_SubheaderConsistency.Content = isSubheaderConsistent ? App.AppResourceManager.MainResourceMap.GetValue("Resources/TopHeaderDetailPage_PropertiesSettingsCard_PropertiesValidationResultTrue").ValueAsString : App.AppResourceManager.MainResourceMap.GetValue("Resources/TopHeaderDetailPage_PropertiesSettingsCard_SubheaderConsistencyResultFalse").ValueAsString;
 
-            TopHeaderDetailPage_HSHRMainIndexSettingsCard_NameHash.Content = currentHSHRSync.HSHRFile.MainIndex[currentHSHRSync.index].NameHash;
-            TopHeaderDetailPage_HSHRMainIndexSettingsCard_DataOffset.Content = currentHSHRSync.HSHRFile.MainIndex[currentHSHRSync.index].DataOffset;
+            TopHeaderDetailPage_HSHRMainIndexSettingsCard_NameHash.Content = currentNavigationInfo.HSHRFile.MainIndex[currentNavigationInfo.Index].NameHash;
+            TopHeaderDetailPage_HSHRMainIndexSettingsCard_DataOffset.Content = currentNavigationInfo.HSHRFile.MainIndex[currentNavigationInfo.Index].DataOffset;
 
-            TopHeaderDetailPage_HSHRDataSettingsCard_CSTT.Content = currentHSHRSync.HSHRFile.Data[currentHSHRSync.index].CSTTMarker == BitConverter.ToUInt32(Encoding.ASCII.GetBytes("TTSC"), 0) ? App.AppResourceManager.MainResourceMap.GetValue("Resources/TopHeaderDetailPage_PropertiesSettingsCard_PropertiesValidationResultTrue").ValueAsString : App.AppResourceManager.MainResourceMap.GetValue("Resources/TopHeaderDetailPage_PropertiesSettingsCard_SubheaderConsistencyResultFalse").ValueAsString; ;
-            TopHeaderDetailPage_HSHRDataSettingsCard_HeaderSize.Content = $"{currentHSHRSync.HSHRFile.Data[currentHSHRSync.index].HeaderSize} bytes";
-            TopHeaderDetailPage_HSHRDataSettingsCard_AllDataSize.Content = $"{currentHSHRSync.HSHRFile.Data[currentHSHRSync.index].AllDataSize} bytes";
-            TopHeaderDetailPage_HSHRDataSettingsCard_SubheadersCount.Content = currentHSHRSync.HSHRFile.Data[currentHSHRSync.index].SubheadersCount;
-            TopHeaderDetailPage_HSHRDataSettingsCard_IDST.Content = currentHSHRSync.HSHRFile.Data[currentHSHRSync.index].IDSTMarker == BitConverter.ToUInt32(Encoding.ASCII.GetBytes("TSDI"), 0) ? App.AppResourceManager.MainResourceMap.GetValue("Resources/TopHeaderDetailPage_PropertiesSettingsCard_PropertiesValidationResultTrue").ValueAsString : App.AppResourceManager.MainResourceMap.GetValue("Resources/TopHeaderDetailPage_PropertiesSettingsCard_SubheaderConsistencyResultFalse").ValueAsString;
-            TopHeaderDetailPage_HSHRDataSettingsCard_IDEN.Content = currentHSHRSync.HSHRFile.Data[currentHSHRSync.index].IDENMarker == BitConverter.ToUInt32(Encoding.ASCII.GetBytes("NEDI"), 0) ? App.AppResourceManager.MainResourceMap.GetValue("Resources/TopHeaderDetailPage_PropertiesSettingsCard_PropertiesValidationResultTrue").ValueAsString : App.AppResourceManager.MainResourceMap.GetValue("Resources/TopHeaderDetailPage_PropertiesSettingsCard_SubheaderConsistencyResultFalse").ValueAsString;
+            TopHeaderDetailPage_HSHRDataSettingsCard_CSTT.Content = currentNavigationInfo.HSHRFile.Data[currentNavigationInfo.Index].CSTTMarker == BitConverter.ToUInt32(Encoding.ASCII.GetBytes("TTSC"), 0) ? App.AppResourceManager.MainResourceMap.GetValue("Resources/TopHeaderDetailPage_PropertiesSettingsCard_PropertiesValidationResultTrue").ValueAsString : App.AppResourceManager.MainResourceMap.GetValue("Resources/TopHeaderDetailPage_PropertiesSettingsCard_SubheaderConsistencyResultFalse").ValueAsString; ;
+            TopHeaderDetailPage_HSHRDataSettingsCard_HeaderSize.Content = $"{currentNavigationInfo.HSHRFile.Data[currentNavigationInfo.Index].HeaderSize} bytes";
+            TopHeaderDetailPage_HSHRDataSettingsCard_AllDataSize.Content = $"{currentNavigationInfo.HSHRFile.Data[currentNavigationInfo.Index].AllDataSize} bytes";
+            TopHeaderDetailPage_HSHRDataSettingsCard_SubheadersCount.Content = currentNavigationInfo.HSHRFile.Data[currentNavigationInfo.Index].SubheadersCount;
+            TopHeaderDetailPage_HSHRDataSettingsCard_IDST.Content = currentNavigationInfo.HSHRFile.Data[currentNavigationInfo.Index].IDSTMarker == BitConverter.ToUInt32(Encoding.ASCII.GetBytes("TSDI"), 0) ? App.AppResourceManager.MainResourceMap.GetValue("Resources/TopHeaderDetailPage_PropertiesSettingsCard_PropertiesValidationResultTrue").ValueAsString : App.AppResourceManager.MainResourceMap.GetValue("Resources/TopHeaderDetailPage_PropertiesSettingsCard_SubheaderConsistencyResultFalse").ValueAsString;
+            TopHeaderDetailPage_HSHRDataSettingsCard_IDEN.Content = currentNavigationInfo.HSHRFile.Data[currentNavigationInfo.Index].IDENMarker == BitConverter.ToUInt32(Encoding.ASCII.GetBytes("NEDI"), 0) ? App.AppResourceManager.MainResourceMap.GetValue("Resources/TopHeaderDetailPage_PropertiesSettingsCard_PropertiesValidationResultTrue").ValueAsString : App.AppResourceManager.MainResourceMap.GetValue("Resources/TopHeaderDetailPage_PropertiesSettingsCard_SubheaderConsistencyResultFalse").ValueAsString;
 
         }
 
         private void TopHeaderDetailPage_HSHRDataSettingsCard_SubheadersIndex_Click(object sender, RoutedEventArgs e)
         {
-            ((App.Current as App)!._window as MainWindow)!.RequestPageTransition(typeof(SubheaderDetailPage), currentHSHRSync!, new SlideNavigationTransitionInfo { Effect = SlideNavigationTransitionEffect.FromRight });
+            ((App.Current as App)!._window as MainWindow)!.RequestPageTransition(typeof(SubheaderDetailPage), currentNavigationInfo!, new SlideNavigationTransitionInfo { Effect = SlideNavigationTransitionEffect.FromRight });
         }
 
         private void TopHeaderDetailPage_HSHRDataSettingsCard_Header_Click(object sender, RoutedEventArgs e)
         {
-            ((App.Current as App)!._window as MainWindow)!.RequestPageTransition(typeof(RawHeaderPage), currentHSHRSync!, new SlideNavigationTransitionInfo { Effect = SlideNavigationTransitionEffect.FromRight});
+            ((App.Current as App)!._window as MainWindow)!.RequestPageTransition(typeof(RawHeaderPage), currentNavigationInfo!, new SlideNavigationTransitionInfo { Effect = SlideNavigationTransitionEffect.FromRight});
 
         }
     }

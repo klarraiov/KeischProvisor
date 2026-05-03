@@ -23,17 +23,34 @@ using System.ComponentModel;
 using Windows.Storage.Pickers.Provider;
 using CommunityToolkit.WinUI.Controls;
 using Respectre.Utils;
+using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections.ObjectModel;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace KeischProvisor.Pages;
 
+public partial class TopHeaderNavigationInfo : ObservableObject
+{
+    [ObservableProperty]
+    private int index;
+
+    [ObservableProperty]
+    private string headerName;
+
+    [ObservableProperty]
+    private string resolvedName;
+
+    [ObservableProperty]
+    private HSHRFile hSHRFile;
+}
 /// <summary>
 /// An empty page that can be used on its own or navigated to within a Frame.
 /// </summary>
 public sealed partial class MainPage : Page
 {
     private Respectre.Utils.HSHRFile? currentHSHRFile;
+    private ObservableCollection<TopHeaderNavigationInfo> navigationLists = new ObservableCollection<TopHeaderNavigationInfo>();
     internal sealed record HSHRSync(HSHRFile HSHRFile, int index);
     public MainPage()
     {
@@ -86,10 +103,20 @@ public sealed partial class MainPage : Page
         }
     }
 
+    private void SettingsCard_Click(object sender, RoutedEventArgs e)
+    {
+        if ((sender as SettingsCard)?.DataContext == null)
+        {
+            return;
+        }
+        ((App.Current as App)!._window as MainWindow)!.RequestPageTransition(typeof(TopHeaderDetailPage), (sender as SettingsCard).DataContext, new SlideNavigationTransitionInfo { Effect = SlideNavigationTransitionEffect.FromRight });
+
+    }
+
     private async Task InitializeCacheElement(string filepath)
     {
-        testui.Children.Clear();
         currentHSHRFile = null;
+        navigationLists.Clear();
 
         currentHSHRFile = new Respectre.Utils.HSHRFile(filepath);
         string statusFormat = App.AppResourceManager.MainResourceMap.GetValue("Resources/MainPage_StatusBarTextBlock_HSHRFileStatus").ValueAsString;
@@ -119,46 +146,19 @@ public sealed partial class MainPage : Page
         MainPage_MainGrid_ChecksumTextBlock.Text = $"0x{currentHSHRFile.Checksum:X16} ({currentHSHRFile.Checksum})";
         MainPage_MainGrid_TopHeadersCountTextBlock.Text = $"{currentHSHRFile.TopHeadersCount}";
 
-        int previousRowCount = testui.RowDefinitions.Count;
-        App.Current.Resources.TryGetValue("GeneralAnimations", out object transistion);
+        string headernametemplate = App.AppResourceManager.MainResourceMap.GetValue("Resources/MainPage_TopHeaderSettingsCard_Header").ValueAsString;
         for (int i = 0; i < currentHSHRFile.TopHeadersCount; i++)
         {
             int index = i;
-            string? resolvedName = string.Empty;
-            string headername = string.Format(App.AppResourceManager.MainResourceMap.GetValue("Resources/MainPage_TopHeaderSettingsCard_Header").ValueAsString, index);
-            HSHRFile.namehashPairs.TryGetValue(currentHSHRFile.MainIndex[index].NameHash, out resolvedName);
-        await Task.Run(() =>
+            TopHeaderNavigationInfo info = new TopHeaderNavigationInfo
             {
-                DispatcherQueue.TryEnqueue(() =>
-                {
-                    RowDefinition rowDefinition = new RowDefinition { Height = GridLength.Auto };
-                    testui.RowDefinitions.Add(rowDefinition);
-
-                    SettingsCard sp = new SettingsCard
-                    {
-                        Header = $"{headername}",
-                        Content = new TextBlock
-                        {
-                            Text = $"{resolvedName}",
-                            IsTextSelectionEnabled = true,
-                        },
-                        HorizontalAlignment = HorizontalAlignment.Stretch,
-                        VerticalAlignment = VerticalAlignment.Top,
-                        IsClickEnabled = true,
-                        Margin = new Thickness(0, 0, 0, 4),
-                        BorderThickness = new Thickness(0),
-                    };
-                    sp.Click += (sender, e) =>
-                    {
-                        var Pairing = new HSHRSync(currentHSHRFile, index);
-                        ((App.Current as App)!._window as MainWindow)!.RequestPageTransition(typeof(TopHeaderDetailPage), Pairing, new SlideNavigationTransitionInfo { Effect = SlideNavigationTransitionEffect.FromRight });
-                    };
-
-                    Grid.SetColumn(sp, 0);
-                    Grid.SetRow(sp, previousRowCount + index);
-                    testui.Children.Add(sp);
-                });
-            });
+                Index = index,
+                HeaderName = string.Format(headernametemplate, index),
+                ResolvedName = HSHRFile.namehashPairs.TryGetValue(currentHSHRFile.MainIndex[index].NameHash, out string? resolvedNameinfo) ? resolvedNameinfo : "Unknown",
+                HSHRFile = currentHSHRFile,
+            };
+             
+            navigationLists.Add(info);
         }
     }
 }

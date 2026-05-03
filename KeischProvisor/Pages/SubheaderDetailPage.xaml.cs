@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.WinUI.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -6,8 +7,10 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Respectre.Utils;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -21,12 +24,27 @@ using Windows.Foundation.Collections;
 
 namespace KeischProvisor.Pages
 {
+    partial class SubheaderIndex : ObservableObject
+    {
+        [ObservableProperty]
+        private int index;
+        [ObservableProperty]
+        private string nameHash;
+        [ObservableProperty]
+        private uint dataOffset;
+        [ObservableProperty]
+        private string settingsCardHeaderName = string.Empty;
+        [ObservableProperty]
+        private string settingsCardDescription = string.Empty;
+
+    }
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
     public sealed partial class SubheaderDetailPage : Page
     {
-        private MainPage.HSHRSync? currentHSHRSync;
+        private TopHeaderNavigationInfo? currentNavigationInfo;
+        private ObservableCollection<SubheaderIndex> subheaderIndices = new ObservableCollection<SubheaderIndex>();
 
         public SubheaderDetailPage()
         {
@@ -46,38 +64,30 @@ namespace KeischProvisor.Pages
 
         private async Task InitializeView(NavigationEventArgs e)
         {
-            if (e.Parameter is not KeischProvisor.Pages.MainPage.HSHRSync)
+            if (e.Parameter is not TopHeaderNavigationInfo)
             {
                 Debug.WriteLine("Invalid parameter. Expected HSHRSync.");
                 return;
             }
-            currentHSHRSync = (MainPage.HSHRSync)e.Parameter;
+            currentNavigationInfo = (TopHeaderNavigationInfo)e.Parameter;
 
-            await Task.Run(() =>
+            SubheaderDetailPage_Title.Text = string.Format(SubheaderDetailPage_Title.Text, currentNavigationInfo.Index);
+            string headername = App.AppResourceManager.MainResourceMap.GetValue("Resources/SubheaderDetailPage_SubheaderListView_SubheaderSettingsCard_Header").ValueAsString;
+            for (int i = 0; i < currentNavigationInfo.HSHRFile.Data[currentNavigationInfo.Index].SubheadersCount; i++)
             {
-                DispatcherQueue.TryEnqueue(async () =>
+                int index = i;
+
+                var subheaderindex = new SubheaderIndex
                 {
-                    for (int i = 0; i < currentHSHRSync.HSHRFile.Data[currentHSHRSync.index].SubheadersCount; i++)
-                    {
-                        int index = i;
-                        await Task.Run(() =>
-                        {
-                            DispatcherQueue.TryEnqueue(() =>
-                            {
-                                SettingsCard subheaderindex = new SettingsCard()
-                                {
-                                    Header = $"Subheader {i}",
-                                    Description = $"Name: {currentHSHRSync.HSHRFile.Data[currentHSHRSync.index].SubheaderIndex[i].NameHash}, DataOffset: 0x{currentHSHRSync.HSHRFile.Data[currentHSHRSync.index].SubheaderIndex[i].DataOffset:X8}"
-                                };
+                    Index = index,
+                    NameHash = currentNavigationInfo.HSHRFile.Data[currentNavigationInfo.Index].SubheaderIndex[index].NameHash.ToString("X8"),
+                    DataOffset = currentNavigationInfo.HSHRFile.Data[currentNavigationInfo.Index].SubheaderIndex[index].DataOffset,
+                    SettingsCardHeaderName =  string.Format(headername, index),
+                    SettingsCardDescription = "NameHash: " + currentNavigationInfo.HSHRFile.Data[currentNavigationInfo.Index].SubheaderIndex[index].NameHash.ToString("X8") + ", DataOffset: " + currentNavigationInfo.HSHRFile.Data[currentNavigationInfo.Index].SubheaderIndex[index].DataOffset.ToString("X8")
 
-                                testui.Children.Add(subheaderindex);
-                            });
-
-                        });
-                    }
-                });
-            });
-
+                };
+                subheaderIndices.Add(subheaderindex);
+            }
 
         }
     }

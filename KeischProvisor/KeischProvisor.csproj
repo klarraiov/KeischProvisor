@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AuroraLib.Cryptography" Version="1.2.0" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.251219" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.251219" />
     <PackageReference Include="HexView.Wpf" Version="0.1.0" />

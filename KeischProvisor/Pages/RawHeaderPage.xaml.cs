@@ -27,7 +27,7 @@ namespace KeischProvisor.Pages
     /// </summary>
     public sealed partial class RawHeaderPage : Page
     {
-        private MainPage.HSHRSync? currentHSHRSync;
+        private TopHeaderNavigationInfo? currentNavigationInfo;
         //public BinaryReader binaryReader;
         public RawHeaderPage()
         {
@@ -46,16 +46,16 @@ namespace KeischProvisor.Pages
 
         private void InitializeView(NavigationEventArgs e)
         {
-            if (e.Parameter is not KeischProvisor.Pages.MainPage.HSHRSync)
+            if (e.Parameter is not TopHeaderNavigationInfo)
             {
-                Debug.WriteLine("Invalid parameter. Expected HSHRSync.");
+                Debug.WriteLine("Invalid parameter. Expected TopHeaderNavigationInfo.");
                 return;
             }
 
-            currentHSHRSync = e.Parameter as MainPage.HSHRSync;
-            RawHeaderPage_Title.Text = string.Format(RawHeaderPage_Title.Text, currentHSHRSync!.index);
-            int i = currentHSHRSync!.index;
-            var header = currentHSHRSync.HSHRFile.Data[i].Header;
+            currentNavigationInfo = e.Parameter as TopHeaderNavigationInfo;
+            RawHeaderPage_Title.Text = string.Format(RawHeaderPage_Title.Text, currentNavigationInfo!.Index);
+            int i = currentNavigationInfo!.Index;
+            var header = currentNavigationInfo.HSHRFile.Data[i].Header;
 
             var hexLines = new List<string>();
             for (int j = 0; j < header.Length; j += 16)
