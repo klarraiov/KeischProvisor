@@ -56,6 +56,7 @@ public sealed partial class SettingsPage : Page, INotifyPropertyChanged
 
     public SettingsPage()
     {
+        NavigationCacheMode = NavigationCacheMode.Enabled;
         InitializeComponent();
         InitializeView();
 
@@ -127,7 +128,7 @@ public sealed partial class SettingsPage : Page, INotifyPropertyChanged
         ((App)App.Current).RestartApp();
     }
 
-    private void SettingsCard_Click(object sender, RoutedEventArgs e)
+    private void TextBlock_Tapped(object sender, TappedRoutedEventArgs e)
     {
         MainWindow mainWindow = (MainWindow)((App)Application.Current)._window!;
         mainWindow.RequestPageTransition(typeof(ExperimentalPage), null!, new SuppressNavigationTransitionInfo());

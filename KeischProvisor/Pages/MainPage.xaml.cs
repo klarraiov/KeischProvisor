@@ -33,16 +33,16 @@ namespace KeischProvisor.Pages;
 public partial class TopHeaderNavigationInfo : ObservableObject
 {
     [ObservableProperty]
-    private int index;
+    public partial int Index { get; set; }
 
     [ObservableProperty]
-    private string headerName;
+    public partial string? HeaderName { get; set; }
 
     [ObservableProperty]
-    private string resolvedName;
+    public partial string? ResolvedName { get; set; }
 
     [ObservableProperty]
-    private HSHRFile hSHRFile;
+    public partial HSHRFile HSHRFile { get; set; }
 }
 /// <summary>
 /// An empty page that can be used on its own or navigated to within a Frame.

@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using Respectre.Utils;
 using System;
@@ -27,15 +28,17 @@ namespace KeischProvisor.Pages
     partial class SubheaderIndex : ObservableObject
     {
         [ObservableProperty]
-        private int index;
+        public partial TopHeaderNavigationInfo TopHeaderNavigationInfo { get; set; }
         [ObservableProperty]
-        private string nameHash;
+        public partial int Index { get; set; }
         [ObservableProperty]
-        private uint dataOffset;
+        public partial string NameHash { get; set; }
         [ObservableProperty]
-        private string settingsCardHeaderName = string.Empty;
+        public partial uint DataOffset { get; set; }
         [ObservableProperty]
-        private string settingsCardDescription = string.Empty;
+        public partial string SettingsCardHeaderName { get; set; } = string.Empty;
+        [ObservableProperty]
+        public partial string SettingsCardDescription { get; set; } = string.Empty;
 
     }
     /// <summary>
@@ -79,14 +82,28 @@ namespace KeischProvisor.Pages
 
                 var subheaderindex = new SubheaderIndex
                 {
+                    TopHeaderNavigationInfo = currentNavigationInfo,
                     Index = index,
                     NameHash = currentNavigationInfo.HSHRFile.Data[currentNavigationInfo.Index].SubheaderIndex[index].NameHash.ToString("X8"),
                     DataOffset = currentNavigationInfo.HSHRFile.Data[currentNavigationInfo.Index].SubheaderIndex[index].DataOffset,
-                    SettingsCardHeaderName =  string.Format(headername, index),
+                    SettingsCardHeaderName = string.Format(headername, index),
                     SettingsCardDescription = "NameHash: " + currentNavigationInfo.HSHRFile.Data[currentNavigationInfo.Index].SubheaderIndex[index].NameHash.ToString("X8") + ", DataOffset: " + currentNavigationInfo.HSHRFile.Data[currentNavigationInfo.Index].SubheaderIndex[index].DataOffset.ToString("X8")
 
                 };
                 subheaderIndices.Add(subheaderindex);
+            }
+
+        }
+
+        private void SettingsCard_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is SettingsCard sc)
+            {
+                ((App.Current as App)!._window as MainWindow)!.RequestPageTransition(typeof(RawHeaderPage), sc.DataContext, new SlideNavigationTransitionInfo { Effect = SlideNavigationTransitionEffect.FromRight });
+            }
+            else
+            {
+                Debug.WriteLine("Invalid sender. Expected SettingsCard.");
             }
 
         }

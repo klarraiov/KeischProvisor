@@ -238,7 +238,7 @@
     <value>IDST</value>
   </data>
   <data name="TopHeaderDetailPage_HSHRDataSettingsCard_SubheadersIndex.Header" xml:space="preserve">
-    <value>하위 헤더 색인</value>
+    <value>하위 헤더 목록</value>
   </data>
   <data name="TopHeaderDetailPage_HSHRDataSettingsCard_IDEN.Header" xml:space="preserve">
     <value>IDEN</value>
@@ -295,12 +295,18 @@
     <value>최상위 헤더 {0}</value>
   </data>
   <data name="RawHeaderPage_Title.Text" xml:space="preserve">
-    <value>최상위 헤더 {0}의 7FPR 헤더</value>
+    <value>{0} {1}의 7FPR 헤더</value>
   </data>
   <data name="SubheaderDetailPage_Title.Text" xml:space="preserve">
-    <value>최상위 헤더 {0}에 대한 하위 헤더 세부 정보</value>
+    <value>최상위 헤더 {0}에 대한 하위 헤더 목록</value>
   </data>
   <data name="SubheaderDetailPage_SubheaderListView_SubheaderSettingsCard_Header" xml:space="preserve">
     <value>하위 헤더 {0}</value>
+  </data>
+  <data name="RawHeaderPage_Title_RuntimePlaceholder0_TopHeader" xml:space="preserve">
+    <value>최상위 헤더</value>
+  </data>
+  <data name="RawHeaderPage_Title_RuntimePlaceholder0_Subheader" xml:space="preserve">
+    <value>하위 헤더</value>
   </data>
 </root>

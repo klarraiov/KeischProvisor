@@ -28,6 +28,7 @@ namespace KeischProvisor.Pages
     public sealed partial class RawHeaderPage : Page
     {
         private TopHeaderNavigationInfo? currentNavigationInfo;
+        private SubheaderIndex? currentSubheaderIndex;
         //public BinaryReader binaryReader;
         public RawHeaderPage()
         {
@@ -46,14 +47,25 @@ namespace KeischProvisor.Pages
 
         private void InitializeView(NavigationEventArgs e)
         {
-            if (e.Parameter is not TopHeaderNavigationInfo)
+            if (e.Parameter is TopHeaderNavigationInfo topInfo)
             {
-                Debug.WriteLine("Invalid parameter. Expected TopHeaderNavigationInfo.");
-                return;
+                InitializeView_PackFileHeader(topInfo);
             }
+            else if (e.Parameter is SubheaderIndex subIndex)
+            {
+                InitializeView_Subheader(subIndex);
+            }
+            else
+            {
+                Debug.WriteLine("Invalid parameter type. Expected TopHeaderNavigationInfo or SubheaderIndex.");
+            }
+        }
 
-            currentNavigationInfo = e.Parameter as TopHeaderNavigationInfo;
-            RawHeaderPage_Title.Text = string.Format(RawHeaderPage_Title.Text, currentNavigationInfo!.Index);
+        private void InitializeView_PackFileHeader(TopHeaderNavigationInfo e)
+        {
+
+            currentNavigationInfo = e;
+            RawHeaderPage_Title.Text = string.Format(RawHeaderPage_Title.Text, App.AppResourceManager.MainResourceMap.TryGetValue("Resources/RawHeaderPage_Title_RuntimePlaceholder0_TopHeader").ValueAsString, currentNavigationInfo!.Index);
             int i = currentNavigationInfo!.Index;
             var header = currentNavigationInfo.HSHRFile.Data[i].Header;
 
@@ -64,6 +76,21 @@ namespace KeischProvisor.Pages
                 hexLines.Add(x);
             }
 
+            testui.Text = string.Join(Environment.NewLine, hexLines);
+        }
+
+        private void InitializeView_Subheader(SubheaderIndex e)
+        {
+            currentSubheaderIndex = e;
+            RawHeaderPage_Title.Text = string.Format(RawHeaderPage_Title.Text, App.AppResourceManager.MainResourceMap.TryGetValue("Resources/RawHeaderPage_Title_RuntimePlaceholder0_Subheader").ValueAsString,currentSubheaderIndex!.Index);
+            int i = currentSubheaderIndex!.Index;
+            var header = currentSubheaderIndex.TopHeaderNavigationInfo.HSHRFile.Data[currentSubheaderIndex.TopHeaderNavigationInfo.Index].Subheader[currentSubheaderIndex.Index];
+            var hexLines = new List<string>();
+            for (int j = 0; j < header.Length; j += 16)
+            {
+                string x = BitConverter.ToString(header, j, Math.Min(16, header.Length - j)).Replace("-", " ");
+                hexLines.Add(x);
+            }
             testui.Text = string.Join(Environment.NewLine, hexLines);
         }
         //private async void testting()

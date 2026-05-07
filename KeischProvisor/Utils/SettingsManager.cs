@@ -7,11 +7,17 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Windows.Globalization;
 
 namespace KeischProvisor.Utils
 {
+
+        [JsonSerializable(typeof(Settings))]
+        internal partial class SettingsJsonContext : JsonSerializerContext
+        {
+        }
     internal class Settings
     {
         public Microsoft.UI.Xaml.ElementTheme AppTheme { get; set; } = Microsoft.UI.Xaml.ElementTheme.Default;
@@ -38,14 +44,14 @@ namespace KeischProvisor.Utils
                 Debug.WriteLine("[SM] Settings Folder unexists. Making a new one..");
                 Directory.CreateDirectory(SETTINGS_FOLDER_PATH);
                 Settings settings = new Settings();
-                string jsondata = JsonSerializer.Serialize<Settings>(settings, new JsonSerializerOptions { WriteIndented = true });
+                string jsondata = JsonSerializer.Serialize<Settings>(settings, SettingsJsonContext.Default.Settings);
                 File.WriteAllBytes(SETTINGS_PATH, Encoding.UTF8.GetBytes(jsondata));
             }
 
             try
             {
                 string jsonString = System.IO.File.ReadAllText(SETTINGS_PATH);
-                Settings settings = JsonSerializer.Deserialize<Settings>(jsonString) ?? new Settings();
+                Settings settings = JsonSerializer.Deserialize<Settings>(jsonString, SettingsJsonContext.Default.Settings) ?? new Settings();
                 return settings;
 
             }
@@ -63,7 +69,7 @@ namespace KeischProvisor.Utils
                 Directory.CreateDirectory(SETTINGS_FOLDER_PATH);
             }
 
-            string jsonString = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
+            string jsonString = JsonSerializer.Serialize(settings, SettingsJsonContext.Default.Settings);
             System.IO.File.WriteAllBytes(SETTINGS_PATH, Encoding.UTF8.GetBytes(jsonString));
         }
 

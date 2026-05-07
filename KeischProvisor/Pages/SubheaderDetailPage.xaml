@@ -22,7 +22,7 @@
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="local:SubheaderIndex">
                     <StackPanel>
-                        <tk:SettingsCard Header="{x:Bind SettingsCardHeaderName}" Description="{x:Bind SettingsCardDescription}" Margin="0 0 0 2" IsClickEnabled="True" BorderThickness="0"></tk:SettingsCard>
+                        <tk:SettingsCard Header="{x:Bind SettingsCardHeaderName}" Description="{x:Bind SettingsCardDescription}" Margin="0 0 0 2" IsClickEnabled="True" BorderThickness="0" Click="SettingsCard_Click"></tk:SettingsCard>
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>

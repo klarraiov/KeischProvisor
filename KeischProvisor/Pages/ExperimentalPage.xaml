@@ -9,18 +9,23 @@
     xmlns:tk="using:CommunityToolkit.WinUI.Controls"
     mc:Ignorable="d">
 
-    <Grid Margin="10">
+    <Grid Margin="40 20 40 0">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" ChildrenTransitions="{StaticResource GeneralAnimations}">
+        
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" x:Name="ExperimentalPage_Title" Text="Experimental Page" FontWeight="SemiBold" FontSize="40"></TextBlock>
+
+
+        <StackPanel Grid.Row="1" ChildrenTransitions="{StaticResource GeneralAnimations}">
             <tk:SettingsCard Header="GameFileList" Click="SettingsCard_Click" IsClickEnabled="True"></tk:SettingsCard>
             <tk:SettingsCard Header="testopen" Click="testopen" IsClickEnabled="True"></tk:SettingsCard>
         </StackPanel>
 
-        <StackPanel Grid.Row="1" ChildrenTransitions="{StaticResource GeneralAnimations}">
-            <TextBlock x:Name="OutputTextBlock" Text="10"></TextBlock>
+        <StackPanel Grid.Row="2" ChildrenTransitions="{StaticResource GeneralAnimations}">
+            <TextBlock x:Name="OutputTextBlock" Text=""></TextBlock>
         </StackPanel>
     </Grid>
 </Page>
