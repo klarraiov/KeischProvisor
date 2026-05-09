@@ -45,6 +45,7 @@ namespace KeischProvisor
             ((App.Current as App)!._window!.Content as FrameworkElement)!.RequestedTheme = App.AppSettings.AppTheme;
 
             Debug.WriteLine($"[SM] AppTheme: {App.AppSettings.AppTheme}");
+            Debug.WriteLine($"[SM] AppLanguage: {App.AppSettings.AppLanguage}");
             Debug.WriteLine($"[SM] Loaded settings.");
 
             ApplicationLanguages.PrimaryLanguageOverride = SettingsManager.AppLanguagesToTag(App.AppSettings.AppLanguage);

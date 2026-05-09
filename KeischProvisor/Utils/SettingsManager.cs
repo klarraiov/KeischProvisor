@@ -14,10 +14,11 @@ using Windows.Globalization;
 namespace KeischProvisor.Utils
 {
 
-        [JsonSerializable(typeof(Settings))]
-        internal partial class SettingsJsonContext : JsonSerializerContext
-        {
-        }
+    [JsonSerializable(typeof(Settings))]
+    internal partial class SettingsJsonContext : JsonSerializerContext
+    {
+    }
+
     internal class Settings
     {
         public Microsoft.UI.Xaml.ElementTheme AppTheme { get; set; } = Microsoft.UI.Xaml.ElementTheme.Default;
@@ -34,7 +35,7 @@ namespace KeischProvisor.Utils
     internal class SettingsManager
     {
         const string SETTINGS_FILE = @"\settings.json";
-        static string SETTINGS_FOLDER_PATH = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)! , "Settings");
+        static string SETTINGS_FOLDER_PATH = System.IO.Path.Combine(AppContext.BaseDirectory, "Settings");
         static string SETTINGS_PATH = Path.Combine(SETTINGS_FOLDER_PATH + SETTINGS_FILE);
 
         internal static Settings LoadSettings()

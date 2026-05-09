@@ -54,7 +54,7 @@ namespace KeischProvisor.Pages
                 return;
             }
             currentNavigationInfo = e.Parameter as TopHeaderNavigationInfo;
-            TopHeaderDetailPage_Title.Text = string.Format(TopHeaderDetailPage_Title.Text, currentNavigationInfo.Index);
+            TopHeaderDetailPage_Title.Text = string.Format(TopHeaderDetailPage_Title.Text, currentNavigationInfo!.Index);
             TopHeaderDetailPage_HSHRMainIndexSettingsExpander.Header = string.Format((string)TopHeaderDetailPage_HSHRMainIndexSettingsExpander.Header, currentNavigationInfo.Index);
             TopHeaderDetailPage_HSHRDataSettingsExpander.Header = string.Format((string)TopHeaderDetailPage_HSHRDataSettingsExpander.Header, currentNavigationInfo.Index);
 

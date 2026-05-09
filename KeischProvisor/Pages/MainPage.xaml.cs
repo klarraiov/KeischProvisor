@@ -105,12 +105,14 @@ public sealed partial class MainPage : Page
 
     private void SettingsCard_Click(object sender, RoutedEventArgs e)
     {
-        if ((sender as SettingsCard)?.DataContext == null)
+        if (sender is SettingsCard sc)
         {
-            return;
+            ((App.Current as App)!._window as MainWindow)!.RequestPageTransition(typeof(TopHeaderDetailPage), sc.DataContext, new SlideNavigationTransitionInfo { Effect = SlideNavigationTransitionEffect.FromRight });
         }
-        ((App.Current as App)!._window as MainWindow)!.RequestPageTransition(typeof(TopHeaderDetailPage), (sender as SettingsCard).DataContext, new SlideNavigationTransitionInfo { Effect = SlideNavigationTransitionEffect.FromRight });
-
+        else
+        {
+            Debug.WriteLine("Invalid sender. Expected SettingsCard.");
+        }
     }
 
     private async Task InitializeCacheElement(string filepath)
