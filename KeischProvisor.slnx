@@ -4,6 +4,7 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
+  <Project Path="CodeWalker/CodeWalker.Core/CodeWalker.Core.csproj" />
   <Project Path="KeischProvisor/KeischProvisor.csproj">
     <Platform Solution="*|ARM64" Project="ARM64" />
     <Platform Solution="*|x64" Project="x64" />
