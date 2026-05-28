@@ -19,7 +19,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" x:Uid="RawHeaderPage_Title" x:Name="RawHeaderPage_Title" Text="7FPR Header of {0} {1}" FontWeight="SemiBold" FontSize="40"></TextBlock>
+            <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" x:Uid="RawHeaderPage_Title" x:Name="RawHeaderPage_Title" Text="Packfile Header of {0} {1}" FontWeight="SemiBold" FontSize="40"></TextBlock>
 
             <TextBox x:Name="testui"
                      Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="1"

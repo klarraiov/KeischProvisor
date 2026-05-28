@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.Windows.Globalization;
+using Microsoft.Windows.Storage.Pickers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -83,6 +84,7 @@ public sealed partial class SettingsPage : Page, INotifyPropertyChanged
         AppLanguageComboBox.SelectedIndex = (int)App.AppSettings.AppLanguage;
         _initialAppLanguageComboBoxSelectedIndex = AppLanguageComboBox.SelectedIndex;
         _appLanguageComboBoxSelectedIndex = AppLanguageComboBox.SelectedIndex;
+        SettingsPage_GamePathSettingsExpander.Description = string.Format((string)SettingsPage_GamePathSettingsExpander.Description, App.AppSettings.GameDirectory);
     }
 
     private void AppThemeRadioButtons_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -114,7 +116,7 @@ public sealed partial class SettingsPage : Page, INotifyPropertyChanged
             }
 
             IsAppLanguageComboBoxChanged = true;
-            
+
             Debug.WriteLine(comboBox.SelectedIndex);
             ApplicationLanguages.PrimaryLanguageOverride = SettingsManager.AppLanguagesToTag((AppLanguages)comboBox.SelectedIndex);
             App.AppSettings.AppLanguage = (AppLanguages)comboBox.SelectedIndex;
@@ -132,5 +134,20 @@ public sealed partial class SettingsPage : Page, INotifyPropertyChanged
     {
         MainWindow mainWindow = (MainWindow)((App)Application.Current)._window!;
         mainWindow.RequestPageTransition(typeof(ExperimentalPage), null!, new SuppressNavigationTransitionInfo());
+    }
+
+    private async void GameDirectoryButton_Click(object sender, RoutedEventArgs e)
+    {
+        FolderPicker picker = new((sender as FrameworkElement)!.XamlRoot.ContentIslandEnvironment.AppWindowId);
+        var folder = await picker.PickSingleFolderAsync();
+
+        if (folder == null) return;
+
+        App.AppSettings.GameDirectory = folder.Path;
+
+
+        SettingsManager.SaveSettings(App.AppSettings);
+        string descriptionFormat = App.AppResourceManager.MainResourceMap.TryGetValue("Resources/SettingsPage_GamePathSettingsExpander_Description")?.ValueAsString ?? "Specify the path for GTAV Enhanced: {0}";
+        SettingsPage_GamePathSettingsExpander.Description = string.Format(descriptionFormat, App.AppSettings.GameDirectory);
     }
 }

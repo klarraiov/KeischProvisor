@@ -295,7 +295,7 @@
     <value>Top Header {0}</value>
   </data>
   <data name="RawHeaderPage_Title.Text" xml:space="preserve">
-    <value>7FPR Header of {0} {1}</value>
+    <value>Packfile Header of {0} {1}</value>
   </data>
   <data name="SubheaderDetailPage_Title.Text" xml:space="preserve">
     <value>Subheader Lists for Top Header {0}</value>

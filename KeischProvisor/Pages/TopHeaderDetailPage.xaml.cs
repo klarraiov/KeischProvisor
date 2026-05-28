@@ -1,3 +1,5 @@
+using CodeWalker.GameFiles;
+using CommunityToolkit.WinUI.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -6,6 +8,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
+using Microsoft.Windows.Storage.Pickers;
 using Respectre.Utils;
 using System;
 using System.Collections.Generic;
@@ -64,7 +67,7 @@ namespace KeischProvisor.Pages
             string resolvedName = HSHRFile.namehashPairs.TryGetValue(mainIndex.NameHash, out string? name) ? name : "Unknown";
             bool isSubheaderConsistent = data.SubheadersCount == data.SubheaderIndex.Count && data.SubheadersCount == data.Subheader.Count;
 
-            TextBlock resolvedNameTextBlock = new TextBlock { Text = resolvedName , IsTextSelectionEnabled = true};
+            TextBlock resolvedNameTextBlock = new TextBlock { Text = resolvedName, IsTextSelectionEnabled = true };
 
             TopHeaderDetailPage_PropertiesSettingsCard_ResolvedName.Content = resolvedNameTextBlock;
             TopHeaderDetailPage_PropertiesSettingsCard_NameHashHex.Content = $"0x{mainIndex.NameHash:X8}";
@@ -92,8 +95,44 @@ namespace KeischProvisor.Pages
 
         private void TopHeaderDetailPage_HSHRDataSettingsCard_Header_Click(object sender, RoutedEventArgs e)
         {
-            ((App.Current as App)!._window as MainWindow)!.RequestPageTransition(typeof(RawHeaderPage), currentNavigationInfo!, new SlideNavigationTransitionInfo { Effect = SlideNavigationTransitionEffect.FromRight});
+            ((App.Current as App)!._window as MainWindow)!.RequestPageTransition(typeof(RawHeaderPage), currentNavigationInfo!, new SlideNavigationTransitionInfo { Effect = SlideNavigationTransitionEffect.FromRight });
 
+        }
+
+        private async void TopHeaderDetailPage_ChangePackfileSettingsCard_Click(object sender, RoutedEventArgs e)
+        {
+            var picker = new FileOpenPicker((sender as FrameworkElement)!.XamlRoot.ContentIslandEnvironment.AppWindowId);
+            picker.FileTypeFilter.Add(".rpf");
+
+            var file = await picker.PickSingleFileAsync();
+            if (file == null) return;
+
+            RpfFile packfile = new RpfFile(file.Path, string.Empty);
+            GTA5Keys.LoadFromPath(App.AppSettings.GameDirectory, gen9:true, null, forEncryption:true);
+            packfile.ScanStructure(null, null, saveheader: true);
+
+            byte[] topheaderbytes = packfile.raw_header;
+            List<HSHRIndex> newindexes = new List<HSHRIndex>();
+            List<byte[]> newsubheaders = new List<byte[]>();
+            foreach (var child in packfile.Children)
+            {
+                //Debug.WriteLine(child.FilePath);
+                //Debug.WriteLine(child.LastException);
+                JenkHash jh = new JenkHash(child.Name.ToLower(), encoding: JenkHashInputEncoding.ASCII);
+                HSHRIndex newindex = new HSHRIndex();
+                newindex.NameHash = jh.HashUint;
+                newindex.DataOffset = 0; //
+                newindexes.Add(newindex);
+
+
+                byte[] rpfSubHeader;
+                rpfSubHeader = child.raw_header;
+                newsubheaders.Add(rpfSubHeader);
+            }
+
+            currentNavigationInfo!.HSHRFile.Data[currentNavigationInfo.Index].Header = topheaderbytes;
+            currentNavigationInfo!.HSHRFile.Data[currentNavigationInfo.Index].SubheaderIndex = newindexes;
+            currentNavigationInfo!.HSHRFile.Data[currentNavigationInfo.Index].Subheader = newsubheaders;
         }
     }
 }

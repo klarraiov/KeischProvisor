@@ -59,8 +59,8 @@
                     </StackPanel>
                     <!--App Theme-->
                     <communitytoolkit:SettingsExpander
-            HeaderIcon="{ui:FontIcon Glyph=&#xE790;}"
-            x:Uid="SettingsPage_AppThemeSettingsExpander">
+                        HeaderIcon="{ui:FontIcon Glyph=&#xE790;}"
+                        x:Uid="SettingsPage_AppThemeSettingsExpander">
                         <communitytoolkit:SettingsExpander.Items>
                             <communitytoolkit:SettingsCard>
                                 <communitytoolkit:SettingsCard.Header>
@@ -75,6 +75,20 @@
                     </communitytoolkit:SettingsExpander>
                 </StackPanel>
 
+                <StackPanel ChildrenTransitions="{StaticResource GeneralAnimations}">
+                    <TextBlock x:Uid="SettingsPage_FunctionalityTextBlock" Text="Functionality" FontWeight="SemiBold" Margin="0 12 0 4"></TextBlock>
+                    <!--Game Directory-->
+                    <communitytoolkit:SettingsCard
+                        HeaderIcon="{ui:FontIcon Glyph=&#xF12B;}"
+                        x:Name="SettingsPage_GamePathSettingsExpander"
+                        x:Uid="SettingsPage_GamePathSettingsExpander"
+                        Header="Game Directory"
+                        Description="Specify the path for GTAV Enhanced: {0}">
+                        <communitytoolkit:SettingsCard.Content>
+                            <Button x:Name="GameDirectoryButton" Click="GameDirectoryButton_Click">Select</Button>
+                        </communitytoolkit:SettingsCard.Content>
+                    </communitytoolkit:SettingsCard>
+                </StackPanel>
 
                 <StackPanel ChildrenTransitions="{StaticResource GeneralAnimations}">
                     <TextBlock x:Uid="SettingsPage_AboutTextBlock" FontWeight="SemiBold" Margin="0 12 0 4"></TextBlock>

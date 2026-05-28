@@ -21,6 +21,7 @@
 
         <ScrollViewer Grid.Row="1">
             <StackPanel Spacing="20" Orientation="Vertical" Margin="40 00 40 20" ChildrenTransitions="{StaticResource GeneralAnimations}">
+                <!--Properties(calculated by keischprovisor)-->
                 <StackPanel ChildrenTransitions="{StaticResource GeneralAnimations}">
                     <TextBlock x:Uid="TopHeaderDetailPage_Subtitle_Properties" x:Name="TopHeaderDetailPage_Subtitle_Properties" Text="Properties" FontWeight="SemiBold" FontSize="24"></TextBlock>
                     <StackPanel ChildrenTransitions="{StaticResource GeneralAnimations}">
@@ -40,7 +41,7 @@
                 </StackPanel>
 
 
-
+                <!--Raw Properties-->
                 <StackPanel ChildrenTransitions="{StaticResource GeneralAnimations}">
                     <TextBlock x:Uid="TopHeaderDetailPage_Subtitle_RawProperties" x:Name="TopHeaderDetailPage_Subtitle_RawProperties" Text="Raw Properties" FontWeight="SemiBold" FontSize="24"></TextBlock>
                     <StackPanel ChildrenTransitions="{StaticResource GeneralAnimations}" Spacing="10">
@@ -70,6 +71,18 @@
                             </tk:SettingsExpander>
                         </StackPanel>
                     </StackPanel>
+                </StackPanel>
+                
+                <!--Unsafe Behaviour-->
+                <StackPanel ChildrenTransitions="{StaticResource GeneralAnimations}">
+                    <TextBlock x:Uid="TopHeaderDetailPage_Subtitle_UnsafeBehaviour" x:Name="TopHeaderDetailPage_Subtitle_UnsafeBehaviour" Text="Unsafe Behaviour" FontWeight="SemiBold" FontSize="24"></TextBlock>
+                    <StackPanel ChildrenTransitions="{StaticResource GeneralAnimations}" >
+                        <TextBlock x:Uid="TopHeaderDetailPage_UnsafeBehaviour_WarningMessage" FontWeight="SemiBold" Margin="0 0 0 4" Text="Options below is considered as experimental and may cause issues."></TextBlock>
+                        <tk:SettingsCard x:Name="TopHeaderDetailPage_ChangePackfileSettingsCard" x:Uid="TopHeaderDetailPage_ChangePackfileSettingsCard" HeaderIcon="{tkwinui:FontIcon Glyph=&#xE8AB;}" Header="Change Packfile" BorderThickness="0" IsClickEnabled="True" Click="TopHeaderDetailPage_ChangePackfileSettingsCard_Click">
+
+                        </tk:SettingsCard>
+                    </StackPanel>
+
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>

@@ -24,6 +24,7 @@ namespace KeischProvisor.Utils
         public Microsoft.UI.Xaml.ElementTheme AppTheme { get; set; } = Microsoft.UI.Xaml.ElementTheme.Default;
         public AppLanguages AppLanguage { get; set; } = AppLanguages.English;
         public bool IsStatusBarVisible { get; set; } = true;
+        public string GameDirectory { get; set; } = "";
     }
 
     internal enum AppLanguages
