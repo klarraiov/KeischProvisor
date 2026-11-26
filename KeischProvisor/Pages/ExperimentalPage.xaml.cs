@@ -17,13 +17,10 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
-
 namespace KeischProvisor.Pages;
 
 /// <summary>
-/// An empty page that can be used on its own or navigated to within a Frame.
+/// Scratch page for dumping path/name-hash pairs. Reachable by tapping the Settings title.
 /// </summary>
 public sealed partial class ExperimentalPage : Page
 {
@@ -70,7 +67,7 @@ public sealed partial class ExperimentalPage : Page
     private void testopen(object sender, RoutedEventArgs e)
     {
         MainWindow mainWindow = (MainWindow)((App)Application.Current)._window!;
-        mainWindow.RequestPageTransition(typeof(RawHeaderPage), null!, new DrillInNavigationTransitionInfo());
+        //mainWindow.RequestPageTransition(typeof(RawHeaderPage), null!, new DrillInNavigationTransitionInfo());
 
 
     }

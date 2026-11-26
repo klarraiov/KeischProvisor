@@ -19,13 +19,11 @@ using Microsoft.UI.System;
 using Microsoft.Windows.Globalization;
 using KeischProvisor.Utils;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
-
 namespace KeischProvisor
 {
     /// <summary>
-    /// An empty window that can be used on its own or navigated to within a Frame.
+    /// Main window: title bar and content frame that hosts ExplorerPage, SettingsPage
+    /// and the legacy detail pages.
     /// </summary>
     public sealed partial class MainWindow : Window
     {
@@ -50,7 +48,8 @@ namespace KeischProvisor
 
             ApplicationLanguages.PrimaryLanguageOverride = SettingsManager.AppLanguagesToTag(App.AppSettings.AppLanguage);
 
-            RequestPageTransition(typeof(Pages.MainPage), null!, null!);
+            // Load the command-line cache (if any) directly into the explorer.
+            RequestPageTransition(typeof(Pages.ExplorerPage), App.StartupCachePath, null!);
         }
 
         public void RequestPageTransition(Type sourcePageType, object parameter, NavigationTransitionInfo navigationTransitionInfo)
@@ -66,6 +65,20 @@ namespace KeischProvisor
             //    ((MicaBackdrop)SystemBackdrop).Kind = Microsoft.UI.Composition.SystemBackdrops.MicaKind.BaseAlt;
             //}
             ContentFrame.Navigate(sourcePageType, parameter, navigationTransitionInfo);
+        }
+
+        /// <summary>
+        /// Shows the currently open cache file in the title bar subtitle.
+        ///
+        /// The subtitle is used instead of the title so the app name stays readable, and the
+        /// path is not duplicated in the command strip. The stock TitleBar template measures
+        /// the subtitle column with Auto width, so long paths are trimmed from the right with
+        /// a tooltip carrying the full value.
+        /// </summary>
+        public void ShowOpenedPath(string path)
+        {
+            AppTitleBar.Subtitle = path;
+            //ToolTipService.SetToolTip(AppTitleBar, path);
         }
 
         private void KeyboardAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)

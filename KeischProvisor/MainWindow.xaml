@@ -15,24 +15,15 @@
     </Window.SystemBackdrop>
 
     <Grid KeyboardAcceleratorPlacementMode="Hidden">
-
-        <!--<Grid.KeyboardAccelerators>
-            <KeyboardAccelerator Key="Left" Modifiers="Menu" Invoked="KeyboardAccelerator_Invoked"/>
-            <KeyboardAccelerator Key="Right" Modifiers="Menu" Invoked="KeyboardAccelerator_Invoked"/>
-        </Grid.KeyboardAccelerators>-->
-
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <!--Titlebar-->
         <TitleBar
             Grid.Row="0"
             x:FieldModifier="public"
             x:Name="AppTitleBar"
             Height="40"
-            Margin="0,0,0,0"
             VerticalAlignment="Top"
             IsBackButtonVisible="True"
             IsPaneToggleButtonVisible="False"
@@ -43,6 +34,7 @@
             </TitleBar.IconSource>
 
             <TitleBar.Resources>
+                <!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
                 <ResourceDictionary
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"
@@ -57,7 +49,7 @@
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="controls:TitleBar">
-                                    <Grid x:Name="PART_LayoutRoot" Height="40" Background="{TemplateBinding Background}">
+                                    <Grid x:Name="PART_LayoutRoot" Height="{ThemeResource TitleBarCompactHeight}" Background="{TemplateBinding Background}">
                                         <VisualStateManager.VisualStateGroups>
                                             <VisualStateGroup x:Name="BackButtonGroup">
                                                 <VisualState x:Name="BackButtonCollapsed" />
@@ -183,7 +175,7 @@
                                                 <VisualState x:Name="CompactHeight" />
                                                 <VisualState x:Name="ExpandedHeight">
                                                     <VisualState.Setters>
-                                                        <Setter Target="PART_LayoutRoot.Height" Value="40" />
+                                                        <Setter Target="PART_LayoutRoot.Height" Value="{ThemeResource TitleBarExpandedHeight}" />
                                                     </VisualState.Setters>
                                                 </VisualState>
                                             </VisualStateGroup>
@@ -224,12 +216,12 @@
                                             <ColumnDefinition Width="Auto" />
                                             <!-- 6: Title -->
                                             <ColumnDefinition Width="Auto" />
-                                            <!-- 7: Subtitle --><!--
+                                            <!-- 7: Subtitle -->
                                             <ColumnDefinition Width="Auto" />
-                                            --><!-- 8: Content Presenter --><!--
+                                            <!-- 8: Content Presenter -->
                                             <ColumnDefinition Width="*" />
-                                            --><!-- 9: Right Header Presenter --><!--
-                                            <ColumnDefinition Width="Auto" />-->
+                                            <!-- 9: Right Header Presenter -->
+                                            <ColumnDefinition Width="Auto" />
                                             <!-- 10: Min Drag Region -->
                                             <ColumnDefinition Width="{ThemeResource TitleBarMinDragRegionWidth}" />
                                             <!-- 11: Right Padding Column -->
@@ -242,7 +234,7 @@
                             Visibility="Collapsed"
                             Grid.Column="1"
                             Style="{ThemeResource TitleBarBackButtonStyle}"
-                                            Margin="4 4 4 4"
+                                            Margin="4 0 4 0"
                                             Width="32"
                                             Height="32"
                             IsEnabled="{TemplateBinding IsBackButtonEnabled}"
@@ -273,7 +265,7 @@
                             VerticalAlignment="Center"
                             MaxWidth="{ThemeResource TitleBarIconMaxWidth}"
                             MaxHeight="{ThemeResource TitleBarIconMaxHeight}"
-                            Margin="-2 0 4 0"
+                            Margin="{ThemeResource TitleBarIconMargin}"
                             Child="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.IconElement}" />
 
                                         <TextBlock
@@ -284,7 +276,7 @@
                             Text="{TemplateBinding Title}"
                             Style="{StaticResource CaptionTextBlockStyle}"
                             Foreground="{TemplateBinding Foreground}"
-                            Margin="4, 0, 8 ,0"
+                            Margin="{ThemeResource TitleBarTitleMargin}"
                             TextTrimming="CharacterEllipsis"
                             TextWrapping="NoWrap"
                             HorizontalAlignment="Left"
@@ -335,6 +327,6 @@
             </TitleBar.Resources>
         </TitleBar>
 
-        <Frame Grid.Row="2" x:Name="ContentFrame" KeyboardAcceleratorPlacementMode="Hidden"/>
+        <Frame Grid.Row="1" x:FieldModifier="Public" x:Name="ContentFrame" KeyboardAcceleratorPlacementMode="Hidden"/>
     </Grid>
 </Window>

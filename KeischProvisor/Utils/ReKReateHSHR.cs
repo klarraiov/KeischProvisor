@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -26,6 +26,79 @@ namespace Respectre.Utils
         public List<HSHRIndex> SubheaderIndex { get; set; } = new List<HSHRIndex>();
         public uint IDENMarker { get; set; }
         public List<byte[]> Subheader { get; set; } = new List<byte[]>();
+
+        /// <summary>
+        /// Resolved relative paths of the subheaders, parallel to <see cref="SubheaderIndex"/>.
+        /// Populated from CodeWalker's child paths; empty entries mean "not resolved".
+        /// </summary>
+        public List<string> SubheaderPaths { get; set; } = new List<string>();
+
+        /// <summary>Safe accessor for the resolved path of subheader j (null when unknown).</summary>
+        public string? SubheaderPath(int j)
+        {
+            if (j < 0 || j >= SubheaderPaths.Count) return null;
+            var p = SubheaderPaths[j];
+            return string.IsNullOrEmpty(p) ? null : p;
+        }
+
+        /// <summary>Copies resolved paths onto the index entries so they survive rebuilds.</summary>
+        public void SyncSubheaderPaths()
+        {
+            while (SubheaderPaths.Count < SubheaderIndex.Count) SubheaderPaths.Add(string.Empty);
+            while (SubheaderPaths.Count > SubheaderIndex.Count) SubheaderPaths.RemoveAt(SubheaderPaths.Count - 1);
+        }
+
+        // Absolute file offsets recorded during ScanStructure.
+        // Header and Subheader are stored trimmed (starting at the '7FPR' magic), so the
+        // absolute position of that magic has to be kept separately for display/editing.
+        public long BlockStart { get; set; }            // absolute offset of 'CSTT'
+        public long HeaderMagicOffset { get; set; } = -1; // absolute offset of '7FPR' inside the header payload
+
+        /// <summary>Absolute offset of the '7FPR' magic of the given subheader (from SubheaderIndex[j].DataOffset).</summary>
+        public long SubheaderMagicOffset(int j) =>
+            (j >= 0 && j < SubheaderIndex.Count) ? SubheaderIndex[j].DataOffset : -1;
+
+        /// <summary>Absolute offset of the subheader index array ('{name_hash, data_offset}' * N).</summary>
+        public long SubheaderIndexOffset => BlockStart + 12 + HeaderSize + 8; // CSTT + sizes + payload(A) + count + IDST
+
+        /// <summary>Absolute offset of the 'IDEN' marker.</summary>
+        public long IDENOffset => SubheaderIndexOffset + SubheadersCount * 8;
+
+        /// <summary>Absolute offset where the subheader payload area begins (right after 'IDEN').</summary>
+        public long SubheaderPayloadOffset => IDENOffset + 4;
+
+        /// <summary>Absolute offset just past this block; equals the next block's 'CSTT' offset.</summary>
+        public long BlockEnd => BlockStart + 12 + AllDataSize;
+
+        /// <summary>Number of entries in the cached RPF header's TOC (read from the 7FPR dword after the magic).</summary>
+        public uint EntryCount
+        {
+            get
+            {
+                if (Header == null || Header.Length < 8) return 0;
+                return BitConverter.ToUInt32(Header, 4);
+            }
+        }
+
+        /// <summary>Name table length of the cached RPF header.</summary>
+        public uint NamesLength
+        {
+            get
+            {
+                if (Header == null || Header.Length < 12) return 0;
+                return BitConverter.ToUInt32(Header, 8);
+            }
+        }
+
+        /// <summary>Encryption dword of the cached RPF header.</summary>
+        public uint Encryption
+        {
+            get
+            {
+                if (Header == null || Header.Length < 16) return 0;
+                return BitConverter.ToUInt32(Header, 12);
+            }
+        }
     }
 
     public class HSHRFile
@@ -312,6 +385,7 @@ namespace Respectre.Utils
 
                 var CSTTPosition = br.BaseStream.Position;
                 HSHRData data = new HSHRData();
+                data.BlockStart = CSTTPosition;
                 data.CSTTMarker = br.ReadUInt32();
                 data.HeaderSize = br.ReadUInt32();
                 data.AllDataSize = br.ReadUInt32();
@@ -347,11 +421,30 @@ namespace Respectre.Utils
 
                 //Header에 패딩이 포함되어 있으므로, 잘라내기
                 int indexOfRpfMagic = IndexOfMagic(data.Header);
-                br.BaseStream.Position = CSTTPosition + 12 + indexOfRpfMagic + 4;
-                uint entryCount = br.ReadUInt32();
-                uint namesLength = br.ReadUInt32();
-                uint ActualHeaderSize = 16 + entryCount * 16 + namesLength;
-                data.Header = data.Header.AsSpan(indexOfRpfMagic, (int)ActualHeaderSize).ToArray();
+                data.HeaderMagicOffset = (indexOfRpfMagic >= 0) ? CSTTPosition + 12 + indexOfRpfMagic : -1;
+
+                if (indexOfRpfMagic < 0)
+                {
+                    // Corrupt block: no '7FPR' inside the declared header area. Keep the raw
+                    // payload so the UI can still show it, but do not attempt to trim.
+                    Debug.WriteLine($"[HSHRFile] Block at 0x{CSTTPosition:X} has no 7FPR magic in its header area.");
+                    data.Header = Array.Empty<byte>();
+                }
+                else
+                {
+                    br.BaseStream.Position = CSTTPosition + 12 + indexOfRpfMagic + 4;
+                    uint entryCount = br.ReadUInt32();
+                    uint namesLength = br.ReadUInt32();
+                    long ActualHeaderSize = 16L + (long)entryCount * 16 + namesLength;
+                    if (ActualHeaderSize <= 0 || indexOfRpfMagic + ActualHeaderSize > data.Header.Length)
+                    {
+                        Debug.WriteLine($"[HSHRFile] Block at 0x{CSTTPosition:X} header size {ActualHeaderSize} exceeds payload; keeping raw bytes.");
+                    }
+                    else
+                    {
+                        data.Header = data.Header.AsSpan(indexOfRpfMagic, (int)ActualHeaderSize).ToArray();
+                    }
+                }
 
                 br.BaseStream.Position = CSTTPosition + data.AllDataSize + 12; // Engine invariant: CSTT + AllDataSize + 12 -> Next CSTT
             }
@@ -420,137 +513,6 @@ namespace Respectre.Utils
 
             return -1;
         }
-
-        //public byte[] ReKReateHSHR()
-        //{
-        //    const uint MarkerCSTT = 0x43535454;
-        //    const uint MarkerIDST = 0x49445354;
-        //    const uint MarkerIDEN = 0x4944454E;
-
-        //    using var ms = new MemoryStream();
-        //    using var bw = new BinaryWriter(ms);
-        //    using var br = new BinaryReader(ms);
-
-        //    // Write Header
-        //    bw.Write(Signature);
-        //    bw.Write(Version);
-        //    bw.Write((ulong)0); // Placeholder for Checksum
-        //    bw.Write(TopHeadersCount);
-
-        //    // Write Main Index
-        //    uint[] MainIndexDataOffsetCalculated = new uint[TopHeadersCount];
-        //    for (int i = 0; i < TopHeadersCount; i++)
-        //    {
-        //        bw.Write(MainIndex[i].NameHash);
-        //        bw.Write((uint)0); // data_offset placeholder
-        //    }
-
-        //    // Write Data
-        //    // 이미 분석한 HeaderSize, SubheaderCount는 외부에서 수정되었으므로 Header.length와 Subheader.Count를 이용해야 함
-        //    for (uint i = 0; i < TopHeadersCount; i++)
-        //    {
-        //        Debug.WriteLine($"[HSHRFile] Writing Data {i} at {ms.Position}");
-        //        HSHRData data = Data[(int)i];
-        //        long dataStartPos = ms.Position;
-
-        //        // Write CSTT Marker
-        //        bw.Write(MarkerCSTT);
-        //        bw.Write((uint)0); // header_size placeholder
-        //        bw.Write((uint)0); // all_data_size placeholder
-
-        //        //padding. 16bytes alignment for RPF magic
-        //        uint InnateHeaderPadding = (uint)IndexOfMagic(data.Header);
-        //        uint FrontPadding = (uint)((16 - (ms.Position + InnateHeaderPadding) % 16) % 16);
-        //        Debug.WriteLine(FrontPadding);
-        //        bw.Write(new byte[FrontPadding]);
-        //        bw.Write(data.Header);
-        //        uint currentPosition = (uint)ms.Position;
-
-        //        // postpadding. RpfFile.EntryCount * 2
-        //        br.BaseStream.Position = dataStartPos + 12 + InnateHeaderPadding + FrontPadding + 4;
-        //        uint rpfEntryCount = br.ReadUInt32(); // read RPF entry count
-        //        uint PostPadding = rpfEntryCount * 2;
-        //        ms.Position = currentPosition;
-        //        bw.Write(new byte[PostPadding]);
-        //        Debug.WriteLine(PostPadding);
-
-        //        uint RpfMagicStart = (uint)dataStartPos + 12 + InnateHeaderPadding + FrontPadding;
-
-        //        //update Header Size
-        //        uint currentMemoryStreamPosition = (uint)ms.Position;
-        //        ms.Position = dataStartPos + 4;
-        //        bw.Write(FrontPadding + data.Header.Length + PostPadding);
-        //        ms.Position = currentMemoryStreamPosition;
-
-        //        bw.Write(data.Subheader.Count);
-        //        bw.Write(MarkerIDST);
-        //        // Write Subheader Index
-        //        for (int j = 0; j < data.Subheader.Count; j++)
-        //        {
-        //            bw.Write(data.SubheaderIndex[j].NameHash);
-        //            bw.Write((uint)0); // subheader_data_offset placeholder
-        //        }
-        //        bw.Write(MarkerIDEN);
-
-        //        // Write Subheaders
-        //        uint[] SubheaderOffsetCalculated = new uint[data.Subheader.Count];
-        //        for (int j = 0; j < data.Subheader.Count; j++)
-        //        {
-        //            //padding. 16bytes alignment for RPF magic
-        //            uint SubheaderPadding = (uint)((16 - (ms.Position % 16)) % 16);
-        //            bw.Write(new byte[SubheaderPadding]);
-
-        //            SubheaderOffsetCalculated[j] = (uint)ms.Position;
-        //            bw.Write(data.Subheader[j]);
-        //            uint currentPosition2 = (uint)ms.Position;
-
-        //            //padding after subheader. just to be safe
-        //            br.BaseStream.Position = SubheaderOffsetCalculated[j] + 4;
-        //            uint rpfSubheaderEntryCount = br.ReadUInt32();
-        //            uint postSubheaderPadding = rpfSubheaderEntryCount * 2;
-        //            ms.Position = currentPosition2;
-        //            bw.Write(new byte[postSubheaderPadding]);
-        //        }
-
-        //        long dataEndPos = ms.Position;
-
-        //        // Update all_data_size
-        //        uint allDataSizeCalculated = (uint)(dataEndPos - dataStartPos - 12);
-        //        ms.Position = dataStartPos + 8;
-        //        bw.Write(allDataSizeCalculated);
-
-        //        // update DataOffset in Subheader Index
-        //        long subheaderIndexStartPos = dataStartPos + 12 + data.Header.Length + 8 + (InnateHeaderPadding + FrontPadding + PostPadding);
-        //        ms.Position = subheaderIndexStartPos + 4;
-        //        for (int j = 0; j < data.Subheader.Count; j++)
-        //        {
-        //            bw.Write(SubheaderOffsetCalculated[j]);
-        //            ms.Position += 4;
-        //        }
-        //        // Store calculated DataOffset for Main Index update
-        //        MainIndexDataOffsetCalculated[i] = RpfMagicStart;
-
-
-        //        ms.Position = dataEndPos;
-        //    }
-
-        //    // Update DataOffset in Main Index
-        //    ms.Position = 20;
-        //    for (int i = 0; i < TopHeadersCount; i++)
-        //    {
-        //        ms.Position += 4; // Skip NameHash
-        //        bw.Write(MainIndexDataOffsetCalculated[i]);
-        //    }
-
-
-        //    // Calculate and write Checksum
-        //    byte[] hshrBinary = ms.ToArray();
-        //    ulong checksum = CalculateChecksum(hshrBinary);
-        //    Buffer.BlockCopy(BitConverter.GetBytes(checksum), 0, hshrBinary, 8, 8);
-
-        //    return hshrBinary;
-        //}
-
 
 
         public byte[] ReKReateHSHR()

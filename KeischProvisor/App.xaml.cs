@@ -1,4 +1,4 @@
-﻿using KeischProvisor.Utils;
+using KeischProvisor.Utils;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -25,9 +25,6 @@ using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace KeischProvisor
 {
@@ -56,9 +53,24 @@ namespace KeischProvisor
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
+            // Optional: open a specific rpf.cache straight from the command line,
+            // e.g. KeischProvisor.exe "C:\...\rpf.cache"
+            var cmdArgs = Environment.GetCommandLineArgs();
+            for (int i = 1; i < cmdArgs.Length; i++)
+            {
+                if (!cmdArgs[i].StartsWith("-") && File.Exists(cmdArgs[i]))
+                {
+                    StartupCachePath = cmdArgs[i];
+                    break;
+                }
+            }
+
             _window = new MainWindow();
             _window.Activate();
         }
+
+        /// <summary>Path passed on the command line, consumed by MainWindow on first navigation.</summary>
+        internal static string? StartupCachePath { get; private set; }
 
         // You can pass arguments to the restarted instance.
         internal void RestartApp(string arguments = "")
