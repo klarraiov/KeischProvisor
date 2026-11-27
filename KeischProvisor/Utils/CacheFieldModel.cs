@@ -162,6 +162,7 @@ namespace Respectre.Utils
         /// <summary>Indices into HSHRFile.MainIndex / HSHRFile.Data.</summary>
         public int TopIndex { get; init; } = -1;
         public int SubIndex { get; init; } = -1;
+        public bool IsModified { get; set; }
 
         public List<CacheNode> Children { get; } = new();
 

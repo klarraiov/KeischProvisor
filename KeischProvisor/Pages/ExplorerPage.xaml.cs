@@ -15,6 +15,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -83,10 +84,14 @@ namespace KeischProvisor.Pages
     public sealed partial class ExplorerPage : Page
     {
         private HSHRFile? _file;
+        private HSHREditSession? _editSession;
         private byte[]? _binary;
         private CacheFieldBuilder? _builder;
         private CacheNode? _root;
         private bool _suppressSelection;
+        private bool _windowClosingHandlerAttached;
+        private bool _allowWindowClose;
+        private bool _closingPrompt;
 
         public ObservableCollection<NodeRow> Nodes { get; } = new();
         public ObservableCollection<FieldRow> Fields { get; } = new();
@@ -131,6 +136,11 @@ namespace KeischProvisor.Pages
         {
             MainPage_StatusBarToggleMenuFlyoutItem.IsChecked = App.AppSettings.IsStatusBarVisible;
             StatusBarGrid.Visibility = App.AppSettings.IsStatusBarVisible ? Visibility.Visible : Visibility.Collapsed;
+            if (!_windowClosingHandlerAttached && App.Current is App app && app._window is MainWindow window)
+            {
+                window.AppWindow.Closing += AppWindow_Closing;
+                _windowClosingHandlerAttached = true;
+            }
         }
 
         /// <summary>
@@ -165,16 +175,83 @@ namespace KeischProvisor.Pages
         private async void CommandOpenButton_Click(object sender, RoutedEventArgs e)
         {
             var picker = new Microsoft.Windows.Storage.Pickers.FileOpenPicker((App.Current as App)!._window!.AppWindow.Id);
-            picker.FileTypeFilter.Add("*");
             picker.FileTypeFilter.Add(".cache");
+            picker.FileTypeFilter.Add("*");
 
             var result = await picker.PickSingleFileAsync();
+            if (result != null) await LoadAsync(result.Path);
+        }
+
+        private async void SaveButton_Click(object sender, RoutedEventArgs e) => await SaveAsync();
+
+        private async void SaveAsButton_Click(object sender, RoutedEventArgs e) => await SaveAsync(saveAs: true);
+
+        private void ExitButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (App.Current is App app && app._window is MainWindow window) window.Close();
+        }
+
+        private async void ReplaceTopHeaderButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_editSession == null || NodeListView.SelectedItem is not NodeRow row
+                || row.Node.Kind != CacheNodeKind.TopHeader) return;
+
+            var picker = new Microsoft.Windows.Storage.Pickers.FileOpenPicker((App.Current as App)!._window!.AppWindow.Id);
+            picker.FileTypeFilter.Add(".rpf");
+            var result = await picker.PickSingleFileAsync();
             if (result == null) return;
-            MainWindow? mw = (MainWindow)((App)Application.Current)._window!;
-            if (mw.ContentFrame.Content is Pages.ExplorerPage explorer)
-                await explorer.LoadAsync(result.Path);
-            else
-                mw.RequestPageTransition(typeof(Pages.ExplorerPage), result.Path, null!);
+
+            int slot = row.Node.TopIndex;
+            string suggestedName = CacheTreeBuilder.ResolveTopName(_file!, slot);
+            if (!suggestedName.EndsWith(".rpf", StringComparison.OrdinalIgnoreCase))
+                suggestedName = Path.GetFileName(result.Path);
+            var nameInput = new TextBox
+            {
+                Text = suggestedName,
+                PlaceholderText = "e.g. update/update.rpf",
+                MinWidth = 340,
+            };
+            var nameDialog = new ContentDialog
+            {
+                Title = "Top Header name",
+                Content = new StackPanel
+                {
+                    Spacing = 8,
+                    Children =
+                    {
+                        new TextBlock { Text = $"Selected RPF: {Path.GetFileName(result.Path)}" },
+                        new TextBlock { Text = "Choose the relative name for this HSHR slot:" },
+                        nameInput,
+                    },
+                },
+                PrimaryButtonText = "Replace",
+                CloseButtonText = "Cancel",
+                DefaultButton = ContentDialogButton.Primary,
+                XamlRoot = XamlRoot,
+            };
+            if (await nameDialog.ShowAsync() != ContentDialogResult.Primary) return;
+
+            ReplaceTopHeaderButton.IsEnabled = false;
+            try
+            {
+                string targetName = RpfHeaderImporter.NormalizeTargetName(nameInput.Text);
+                uint targetHash = RpfHeaderImporter.CalculateNameHash(targetName);
+                string gameDirectory = App.AppSettings.GameDirectory;
+                var replacement = await Task.Run(() => RpfHeaderImporter.Load(result.Path, gameDirectory));
+                await Task.Run(() => _editSession.ReplaceSlot(slot, targetName, targetHash, replacement));
+                RefreshCurrentDocument(slot, -1);
+                StatusText.Text = $"Replaced Top Header #{slot} as {targetName} from {Path.GetFileName(result.Path)}";
+            }
+            catch (Exception ex)
+            {
+                StatusText.Text = $"Replace failed: {ex.Message}";
+                Debug.WriteLine(ex);
+            }
+            finally
+            {
+                ReplaceTopHeaderButton.IsEnabled = NodeListView.SelectedItem is NodeRow selected
+                    && selected.Node.Kind == CacheNodeKind.TopHeader;
+            }
         }
 
         private void CommandSettingsButton_Click(object sender, RoutedEventArgs e)
@@ -199,14 +276,109 @@ namespace KeischProvisor.Pages
                 _ = LoadAsync(path);
         }
 
+        private async Task<bool> SaveAsync(bool saveAs = false)
+        {
+            if (_editSession == null) return false;
+            string path = _editSession.Current.FilePath;
+            if (saveAs || string.IsNullOrWhiteSpace(path))
+            {
+                var picker = new Microsoft.Windows.Storage.Pickers.FileSavePicker((App.Current as App)!._window!.AppWindow.Id);
+                picker.FileTypeChoices.Add("HSHR cache", new List<string> { ".cache" });
+                picker.SuggestedFileName = string.IsNullOrWhiteSpace(path) ? "rpf.cache" : Path.GetFileName(path);
+                var result = await picker.PickSaveFileAsync();
+                if (result == null) return false;
+                path = result.Path;
+            }
+
+            string tempPath = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(path))!,
+                $".{Path.GetFileName(path)}.{Guid.NewGuid():N}.tmp");
+            try
+            {
+                byte[] binary = await Task.Run(() => _editSession.BuildBinary());
+                await Task.Run(() =>
+                {
+                    File.WriteAllBytes(tempPath, binary);
+                    File.Move(tempPath, path, overwrite: true);
+                });
+                _editSession.AcceptSaved(path, binary);
+                _file = _editSession.Current;
+                _binary = _editSession.CurrentBinary;
+                _builder = new CacheFieldBuilder(_file, _binary);
+                if (App.Current is App app && app._window is MainWindow window) window.ShowOpenedPath(path);
+                RefreshCurrentDocument(NodeListView.SelectedItem is NodeRow selected ? selected.Node.TopIndex : -1,
+                    NodeListView.SelectedItem is NodeRow child && child.Node.Kind == CacheNodeKind.Subheader ? child.Node.SubIndex : -1);
+                string savedStatus = $"Saved {binary.Length:N0} bytes to {path}";
+                try
+                {
+                    PersistTopHeaderNames(_editSession.Current);
+                }
+                catch (Exception ex)
+                {
+                    savedStatus += $" (custom name labels could not be saved: {ex.Message})";
+                    Debug.WriteLine(ex);
+                }
+                StatusText.Text = savedStatus;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                StatusText.Text = $"Save failed: {ex.Message}";
+                Debug.WriteLine(ex);
+                return false;
+            }
+            finally
+            {
+                if (File.Exists(tempPath)) File.Delete(tempPath);
+            }
+        }
+
+        private async Task<bool> ResolvePendingChangesAsync()
+        {
+            if (_editSession?.IsDirty != true) return true;
+            var dialog = new ContentDialog
+            {
+                Title = "Unsaved changes",
+                Content = "Save the edited HSHR data before continuing?",
+                PrimaryButtonText = "Save",
+                SecondaryButtonText = "Discard",
+                CloseButtonText = "Cancel",
+                DefaultButton = ContentDialogButton.Primary,
+                XamlRoot = XamlRoot,
+            };
+            var result = await dialog.ShowAsync();
+            if (result == ContentDialogResult.Primary) return await SaveAsync();
+            return result == ContentDialogResult.Secondary;
+        }
+
+        private async void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
+        {
+            if (_allowWindowClose || _editSession?.IsDirty != true) return;
+            args.Cancel = true;
+            if (_closingPrompt) return;
+            _closingPrompt = true;
+            bool close;
+            try
+            {
+                close = await ResolvePendingChangesAsync();
+            }
+            finally
+            {
+                _closingPrompt = false;
+            }
+            if (close)
+            {
+                _allowWindowClose = true;
+                if (App.Current is App app && app._window is MainWindow window) window.Close();
+            }
+        }
+
         // ---- loading --------------------------------------------------------
 
         public async Task LoadAsync(string path)
         {
-            StatusText.Text = "Reading…";
-            _file = null; _binary = null; _builder = null; _root = null;
-            Nodes.Clear(); Fields.Clear(); HexRows.Clear();
+            if (_editSession?.IsDirty == true && !await ResolvePendingChangesAsync()) return;
 
+            StatusText.Text = "Reading…";
             try
             {
                 var binary = await Task.Run(() => File.ReadAllBytes(path));
@@ -216,26 +388,27 @@ namespace KeischProvisor.Pages
                     DispatcherQueue.TryEnqueue(() =>
                         StatusText.Text = $"Reading 0x{status.Position:X} · {status.Stage} {status.CurrentIndex}/{status.TotalTopHeadersCount}");
                 }));
+                if (file.Signature != 0x52485348 || file.MainIndex.Count != file.TopHeadersCount
+                    || file.Data.Count != file.TopHeadersCount)
+                    throw new InvalidDataException("The selected file is not a complete HSHR cache.");
+                ApplySavedTopHeaderNames(file);
 
-                _file = file;
-                _binary = binary;
-                _builder = new CacheFieldBuilder(file, binary);
-                _root = CacheTreeBuilder.Build(file);
-
+                var session = new HSHREditSession(file, binary);
+                _editSession = session;
+                _file = session.Current;
+                _binary = session.CurrentBinary;
+                _builder = new CacheFieldBuilder(_file, _binary);
+                _root = CacheTreeBuilder.Build(_file);
+                MarkModifiedNodes();
                 BuildNodeRows();
                 ShowNode(_root);
 
-                // ---- global toolbar (previously MainPage) ----
-                SignatureText.Text = Encoding.ASCII.GetString(BitConverter.GetBytes(file.Signature));
-                BuildText.Text = $"{file.VersionMajor}.{file.VersionMinor}";
-                HeaderCountText.Text = $"{file.TopHeadersCount} headers";
-                ChecksumText.Text = $"0x{file.Checksum:X16}";
-                ToolTipService.SetToolTip(ChecksumText, $"0x{file.Checksum:X16} ({file.Checksum:N0})");
-                if (App.Current is App app && app._window is MainWindow mw)
-                {
-                    mw.ShowOpenedPath(path);
-                }
-                StatusText.Text = $"Loaded {new FileInfo(path).Length:N0} bytes · {Nodes.Count:N0} nodes";
+                SignatureText.Text = Encoding.ASCII.GetString(BitConverter.GetBytes(_file.Signature));
+                BuildText.Text = $"{_file.VersionMajor}.{_file.VersionMinor}";
+                HeaderCountText.Text = $"{_file.TopHeadersCount} headers";
+                UpdateChecksumDisplay();
+                if (App.Current is App app && app._window is MainWindow mw) mw.ShowOpenedPath(path);
+                StatusText.Text = $"Loaded {binary.Length:N0} bytes · {Nodes.Count:N0} nodes";
             }
             catch (Exception ex)
             {
@@ -330,6 +503,76 @@ namespace KeischProvisor.Pages
                 : $"{shown:N0} / {total:N0} nodes";
         }
 
+        private void MarkModifiedNodes()
+        {
+            if (_root == null || _editSession == null) return;
+            _root.IsModified = _editSession.IsDirty;
+            foreach (var top in _root.Children)
+            {
+                top.IsModified = _editSession.IsSlotModified(top.TopIndex);
+                foreach (var sub in top.Children)
+                    sub.IsModified = _editSession.IsSubheaderModified(top.TopIndex, sub.SubIndex);
+            }
+        }
+
+        private void RefreshCurrentDocument(int selectedTop, int selectedSub)
+        {
+            if (_editSession == null) return;
+            _file = _editSession.Current;
+            _binary = _editSession.CurrentBinary;
+            _builder = new CacheFieldBuilder(_file, _binary);
+            _root = CacheTreeBuilder.Build(_file);
+            MarkModifiedNodes();
+            BuildNodeRows();
+            UpdateChecksumDisplay();
+
+            CacheNode selected = selectedTop < 0
+                ? _root
+                : _root.Children.First(n => n.TopIndex == selectedTop);
+            if (selectedSub >= 0)
+            {
+                if (!_expanded.Contains(selectedTop)) _expanded.Add(selectedTop);
+                selected = selected.Children.First(n => n.SubIndex == selectedSub);
+                BuildNodeRows();
+            }
+            var row = Nodes.FirstOrDefault(r => ReferenceEquals(r.Node, selected));
+            if (row != null)
+            {
+                NodeListView.SelectedItem = row;
+                ShowNode(selected);
+            }
+        }
+
+        private void UpdateChecksumDisplay()
+        {
+            if (_file == null) return;
+            ChecksumText.Text = $"0x{_file.Checksum:X16}";
+            ToolTipService.SetToolTip(ChecksumText, $"0x{_file.Checksum:X16} ({_file.Checksum:N0})");
+        }
+
+        private static void ApplySavedTopHeaderNames(HSHRFile file)
+        {
+            foreach (var index in Enumerable.Range(0, file.MainIndex.Count))
+                if (App.AppSettings.HSHRNameOverrides.TryGetValue(file.MainIndex[index].NameHash, out var savedName))
+                {
+                    while (file.TopHeaderNames.Count <= index) file.TopHeaderNames.Add(string.Empty);
+                    file.TopHeaderNames[index] = savedName;
+                }
+        }
+
+        private static void PersistTopHeaderNames(HSHRFile file)
+        {
+            for (int i = 0; i < file.MainIndex.Count && i < file.TopHeaderNames.Count; i++)
+            {
+                string name = file.TopHeaderNames[i];
+                if (string.IsNullOrEmpty(name)) continue;
+                if (!HSHRFile.namehashPairs.TryGetValue(file.MainIndex[i].NameHash, out var knownName)
+                    || !string.Equals(name, knownName, StringComparison.OrdinalIgnoreCase))
+                    App.AppSettings.HSHRNameOverrides[file.MainIndex[i].NameHash] = name;
+            }
+            SettingsManager.SaveSettings(App.AppSettings);
+        }
+
         private NodeRow MakeRow(CacheNode node, int depth)
         {
             // rpf.cache is a single file, so the root is a document, not a folder. Top-level
@@ -352,7 +595,7 @@ namespace KeischProvisor.Pages
                 Glyph = glyph,
                 Label = node.Label,
                 HasLabel = !string.IsNullOrEmpty(node.Label),
-                Name = node.Name ?? "—",
+                Name = (node.Name ?? "—") + (node.IsModified ? " *" : ""),
                 OffsetText = node.Kind == CacheNodeKind.Root ? "0x0" : $"0x{node.Start:X}",
                 SubCountText = node.Children.Count > 0 ? node.Children.Count.ToString() : "",
                 IndentWidth = depth * 12,
@@ -397,6 +640,7 @@ namespace KeischProvisor.Pages
         {
             if (_builder == null || _file == null) return;
 
+            ReplaceTopHeaderButton.IsEnabled = node.Kind == CacheNodeKind.TopHeader;
             _suppressSelection = true;
             Fields.Clear();
 
@@ -424,6 +668,7 @@ namespace KeischProvisor.Pages
                 CacheNodeKind.TopHeader => _builder.BuildTopHeader(node.TopIndex),
                 _ => _builder.BuildSubheader(node.TopIndex, node.SubIndex),
             };
+            descriptors.AddRange(BuildChangeDescriptors(node));
 
             PopulateSummary(descriptors.Where(d => d.Kind == FieldKind.Computed).ToList());
 
@@ -460,6 +705,68 @@ namespace KeischProvisor.Pages
                 : node.Kind == CacheNodeKind.TopHeader
                     ? $"{node.Children.Count} subheaders"
                     : $"subheader [{node.SubIndex}]";
+        }
+
+        private List<FieldDescriptor> BuildChangeDescriptors(CacheNode node)
+        {
+            var result = new List<FieldDescriptor>();
+            if (_editSession == null || !_editSession.IsDirty) return result;
+
+            if (node.Kind == CacheNodeKind.Root)
+            {
+                result.Add(ChangeField("Modified slots", _editSession.GetChangedSlots().Count.ToString()));
+                return result;
+            }
+
+            var before = _editSession.Original.Data[node.TopIndex];
+            var current = _editSession.Current.Data[node.TopIndex];
+            if (!_editSession.IsSlotModified(node.TopIndex)) return result;
+
+            if (node.Kind == CacheNodeKind.TopHeader)
+            {
+                result.Add(ChangeField("Original slot name", $"{_editSession.Original.TopHeaderNames[node.TopIndex]} · 0x{_editSession.Original.MainIndex[node.TopIndex].NameHash:X8}"));
+                result.Add(ChangeField("Current slot name", $"{_editSession.Current.TopHeaderNames[node.TopIndex]} · 0x{_editSession.Current.MainIndex[node.TopIndex].NameHash:X8}"));
+                result.Add(ChangeField("Original Top Header", DescribeHeader(before.Header)));
+                result.Add(ChangeField("Current Top Header", DescribeHeader(current.Header)));
+                result.Add(ChangeField("Original subheaders", before.Subheader.Count.ToString()));
+                result.Add(ChangeField("Current subheaders", current.Subheader.Count.ToString()));
+                return result;
+            }
+
+            string originalSub = node.SubIndex < before.Subheader.Count
+                ? DescribeHeader(before.Subheader[node.SubIndex])
+                : "<not present>";
+            string currentSub = node.SubIndex < current.Subheader.Count
+                ? DescribeHeader(current.Subheader[node.SubIndex])
+                : "<not present>";
+            uint originalHash = node.SubIndex < before.SubheaderIndex.Count
+                ? before.SubheaderIndex[node.SubIndex].NameHash : 0;
+            uint currentHash = node.SubIndex < current.SubheaderIndex.Count
+                ? current.SubheaderIndex[node.SubIndex].NameHash : 0;
+            result.Add(ChangeField("Original subheader", $"hash 0x{originalHash:X8} · {originalSub}"));
+            result.Add(ChangeField("Current subheader", $"hash 0x{currentHash:X8} · {currentSub}"));
+            return result;
+        }
+
+        private static FieldDescriptor ChangeField(string name, string value) => new()
+        {
+            Name = name,
+            Type = "original → current",
+            Offset = -1,
+            Length = 0,
+            Kind = FieldKind.Computed,
+            Status = FieldStatus.NotApplicable,
+            StatusDetail = value,
+        };
+
+        private static string DescribeHeader(byte[] bytes)
+        {
+            if (bytes.Length < 16) return $"{bytes.Length} bytes (truncated)";
+            uint entries = BitConverter.ToUInt32(bytes, 4);
+            uint namesLength = BitConverter.ToUInt32(bytes, 8);
+            uint encryption = BitConverter.ToUInt32(bytes, 12);
+            string digest = Convert.ToHexString(SHA256.HashData(bytes));
+            return $"{bytes.Length} bytes · {entries} entries · names {namesLength} · encryption 0x{encryption:X8} · SHA-256 {digest}";
         }
 
         private void PopulateSummary(List<FieldDescriptor> computed)

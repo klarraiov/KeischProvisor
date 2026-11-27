@@ -20,8 +20,8 @@ namespace Respectre.Utils
         public uint CSTTMarker { get; set; }
         public uint HeaderSize { get; set; }
         public uint AllDataSize { get; set; }
-        public byte[] Header { get; set; }
-        public uint SubheadersCount { get; set; }
+        public byte[] Header { get; set; } = Array.Empty<byte>();
+        public uint SubheadersCount { get; set;}
         public uint IDSTMarker { get; set; }
         public List<HSHRIndex> SubheaderIndex { get; set; } = new List<HSHRIndex>();
         public uint IDENMarker { get; set; }
@@ -29,7 +29,7 @@ namespace Respectre.Utils
 
         /// <summary>
         /// Resolved relative paths of the subheaders, parallel to <see cref="SubheaderIndex"/>.
-        /// Populated from CodeWalker's child paths; empty entries mean "not resolved".
+        /// Empty entries mean the path could not be resolved from the stored hash.
         /// </summary>
         public List<string> SubheaderPaths { get; set; } = new List<string>();
 
@@ -114,6 +114,7 @@ namespace Respectre.Utils
         public ulong Checksum { get; set; }
         public uint TopHeadersCount { get; set; }
         public List<HSHRIndex> MainIndex { get; set; } = new List<HSHRIndex>();
+        public List<string> TopHeaderNames { get; set; } = new List<string>();
         public List<HSHRData> Data { get; set; } = new List<HSHRData>();
 
         // Results from Binary
@@ -313,6 +314,12 @@ namespace Respectre.Utils
 
         };
 
+        internal HSHRFile()
+        {
+            Name = string.Empty;
+            FilePath = string.Empty;
+        }
+
         public HSHRFile(string FilePath)
         {
             FileInfo fi = new FileInfo(FilePath);
@@ -323,7 +330,6 @@ namespace Respectre.Utils
 
         public void ScanStructure(Action<HSHRScanStatus>? statusPropagator)
         {
-
             using var br = new BinaryReader(File.OpenRead(this.FilePath));
             try
             {
@@ -333,6 +339,18 @@ namespace Respectre.Utils
             {
                 Debug.WriteLine($"[HSHRFile] ScanStructure Exception: {ex.Message}");
             }
+        }
+
+        public void ScanStructure(byte[] binary)
+        {
+            if (binary == null) throw new ArgumentNullException(nameof(binary));
+            MainIndex.Clear();
+            TopHeaderNames.Clear();
+            Data.Clear();
+            using var stream = new MemoryStream(binary, writable: false);
+            using var br = new BinaryReader(stream);
+            ScanStructure(br, null);
+            FileSize = binary.LongLength;
         }
 
         private void ScanStructure(BinaryReader br, Action<HSHRScanStatus>? statusPropagator)
@@ -371,6 +389,7 @@ namespace Respectre.Utils
                     DataOffset = br.ReadUInt32()
                 };
                 MainIndex.Add(index);
+                TopHeaderNames.Add(namehashPairs.TryGetValue(index.NameHash, out var name) ? name : string.Empty);
             }
 
             // Read Data
@@ -639,4 +658,5 @@ namespace Respectre.Utils
             return HSHRBinary;
         }
     }
-}
+
+    }

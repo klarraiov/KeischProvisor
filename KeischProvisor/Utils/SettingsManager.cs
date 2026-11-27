@@ -25,6 +25,7 @@ namespace KeischProvisor.Utils
         public AppLanguages AppLanguage { get; set; } = AppLanguages.English;
         public bool IsStatusBarVisible { get; set; } = true;
         public string GameDirectory { get; set; } = "";
+        public Dictionary<uint, string> HSHRNameOverrides { get; set; } = new();
     }
 
     internal enum AppLanguages

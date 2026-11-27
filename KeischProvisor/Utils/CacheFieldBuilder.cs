@@ -156,9 +156,7 @@ namespace Respectre.Utils
                 long off = 0x14 + i * 8L;
                 var hash = Raw($"main_index[{i}].name_hash", "u32", off, 4, "JOAAT of the lowercase archive path");
                 hash.Kind = FieldKind.IndexEntry;
-                var resolved = HSHRFile.namehashPairs.TryGetValue(_file.MainIndex[i].NameHash, out var nm)
-                    ? nm
-                    : $"0x{_file.MainIndex[i].NameHash:X8}";
+                var resolved = CacheTreeBuilder.ResolveTopName(_file, i);
                 hash.Status = FieldStatus.Ok;
                 hash.StatusDetail = resolved;
                 list.Add(hash);
@@ -292,7 +290,7 @@ namespace Respectre.Utils
             bool consistent = d.SubheadersCount == d.SubheaderIndex.Count && d.SubheadersCount == cwSubs;
             list.Add(Computed("Resolved Name",
                 "string",
-                HSHRFile.namehashPairs.TryGetValue(_file.MainIndex[index].NameHash, out var rn) ? rn : "Unknown"));
+                CacheTreeBuilder.ResolveTopName(_file, index)));
             list.Add(Computed("Name Hash (Hex)", "u32", $"0x{_file.MainIndex[index].NameHash:X8}"));
             list.Add(Computed("Data Offset (Hex)", "u32", $"0x{_file.MainIndex[index].DataOffset:X}"));
             list.Add(Computed("Header Size", "u32", $"{d.HeaderSize} bytes"));

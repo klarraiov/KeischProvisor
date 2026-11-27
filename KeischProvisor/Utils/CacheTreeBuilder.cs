@@ -73,6 +73,8 @@ namespace Respectre.Utils
         public static string ResolveTopName(HSHRFile file, int index)
         {
             if (index < 0 || index >= file.MainIndex.Count) return "—";
+            if (index < file.TopHeaderNames.Count && !string.IsNullOrEmpty(file.TopHeaderNames[index]))
+                return file.TopHeaderNames[index];
             uint hash = file.MainIndex[index].NameHash;
             return HSHRFile.namehashPairs.TryGetValue(hash, out var name)
                 ? name

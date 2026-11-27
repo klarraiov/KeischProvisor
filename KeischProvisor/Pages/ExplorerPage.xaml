@@ -73,8 +73,9 @@
             <MenuBar Grid.Row="0" Grid.Column="0">
                 <MenuBarItem x:Uid="MainPage_MenuFile" Title="File">
                     <MenuFlyoutItem x:Uid="MainPage_MenuFileOpen" Text="Open" Click="CommandOpenButton_Click"/>
-                    <MenuFlyoutItem x:Uid="MainPage_MenuFileSave" Text="Save" />
-                    <MenuFlyoutItem x:Uid="MainPage_MenuFileExit" Text="Exit" />
+                    <MenuFlyoutItem x:Uid="MainPage_MenuFileSave" Text="Save" Click="SaveButton_Click" />
+                    <MenuFlyoutItem Text="Save As…" Click="SaveAsButton_Click" />
+                    <MenuFlyoutItem x:Uid="MainPage_MenuFileExit" Text="Exit" Click="ExitButton_Click" />
                 </MenuBarItem>
                 <MenuBarItem x:Uid="MainPage_MenuEdit" Title="Edit">
                     <MenuFlyoutItem x:Uid="MainPage_MenuEditCut" Text="Cut" />
@@ -115,8 +116,12 @@
             </StackPanel>
 
             <!-- The open file's path lives in the app title bar, not here. -->
-            <Button Grid.Column="2" x:Name="ValidationButton" Content="Checks" FontSize="12"
-                    Padding="10 4 10 4" Click="ValidationButton_Click"/>
+            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6">
+                <Button x:Name="ReplaceTopHeaderButton" Content="Replace Top Header…" FontSize="12"
+                        Padding="10 4 10 4" IsEnabled="False" Click="ReplaceTopHeaderButton_Click"/>
+                <Button x:Name="ValidationButton" Content="Checks" FontSize="12"
+                        Padding="10 4 10 4" Click="ValidationButton_Click"/>
+            </StackPanel>
         </Grid>
 
         <!-- ===== Two-pane body ===== -->
