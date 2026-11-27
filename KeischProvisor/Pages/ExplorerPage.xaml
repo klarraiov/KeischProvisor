@@ -5,7 +5,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:KeischProvisor.Pages"
     xmlns:controls="using:KeischProvisor.Controls"
-    xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -71,17 +70,22 @@
 
             <!-- leftside -->
             <MenuBar Grid.Row="0" Grid.Column="0">
+                <MenuBar.Resources>
+                    <Style TargetType="MenuBarItem">
+                        <Setter Property="Margin" Value="4, 4, -4, 4" />
+                    </Style>
+                </MenuBar.Resources>
                 <MenuBarItem x:Uid="MainPage_MenuFile" Title="File">
                     <MenuFlyoutItem x:Uid="MainPage_MenuFileOpen" Text="Open" Click="CommandOpenButton_Click"/>
                     <MenuFlyoutItem x:Uid="MainPage_MenuFileSave" Text="Save" Click="SaveButton_Click" />
                     <MenuFlyoutItem Text="Save As…" Click="SaveAsButton_Click" />
                     <MenuFlyoutItem x:Uid="MainPage_MenuFileExit" Text="Exit" Click="ExitButton_Click" />
                 </MenuBarItem>
-                <MenuBarItem x:Uid="MainPage_MenuEdit" Title="Edit">
+                <!--<MenuBarItem x:Uid="MainPage_MenuEdit" Title="Edit">
                     <MenuFlyoutItem x:Uid="MainPage_MenuEditCut" Text="Cut" />
                     <MenuFlyoutItem x:Uid="MainPage_MenuEditCopy" Text="Copy" />
                     <MenuFlyoutItem x:Uid="MainPage_MenuEditPaste" Text="Paste" />
-                </MenuBarItem>
+                </MenuBarItem>-->
                 <MenuBarItem x:Uid="MainPage_MenuView" Title="View">
                     <ToggleMenuFlyoutItem x:Name="MainPage_StatusBarToggleMenuFlyoutItem" x:Uid="MainPage_MenuViewStatusBar" Text="Status bar" Click="StatusBarToggleMenuFlyoutItem_Click"/>
                 </MenuBarItem>
@@ -128,8 +132,8 @@
         <Grid Grid.Row="2" x:Name="PaneRoot">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition x:Name="TreeColumn" Width="380" MinWidth="220"/>
-                <ColumnDefinition Width="6"/>
-                <ColumnDefinition Width="*" MinWidth="320"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*" x:Name="DetailColumn" MinWidth="320"/>
             </Grid.ColumnDefinitions>
 
             <!-- Left: tree.
@@ -237,16 +241,25 @@
                 </ListView>
             </Grid>
 
-            <!-- Pane divider. A GridSplitter is the right tool here: both sides are real
-                 grid columns of this two-pane grid, so the toolkit can resize them directly
-                 with no data rows to keep in sync. PreviousAndNext targets the tree column
-                 (pixel) and the detail column (star); the toolkit only writes the non-star
-                 side, so the detail pane keeps absorbing the remaining width. The MinWidth
-                 values (220 / 320) are the clamp. -->
-            <toolkit:GridSplitter Grid.Column="1" MinWidth="0" MinHeight="0" IsTabStop="False"
-                                  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                                  ResizeDirection="Columns" ResizeBehavior="PreviousAndNext"
-                                  Background="Transparent" Foreground="Transparent"/>
+            <!-- Pane divider.
+                 Deliberately the app's own ColumnGrip rather than the toolkit's GridSplitter.
+                 CommunityToolkit.WinUI.Controls.Sizers 8.2.251219 reads a definition's width
+                 with `(GridLength)definition.GetValue(ColumnDefinition.WidthProperty)` inside
+                 IsStarColumn/IsStarRow, which ILCompiler cannot satisfy: it reports
+                 `unbox.any GridLength` as an InvalidCastException while dragging. Under
+                 Native AOT that escape from a manipulation callback is a stowed exception
+                 (0xc000027b / E_NOINTERFACE), i.e. an instant crash; a JIT build unboxes the
+                 boxed struct fine, which is why only the AOT publish died here. Upstream
+                 CommunityToolkit/Windows#612, fixed by PR #868, but not yet in a release.
+                 ColumnGrip carries no such cast, so it is AOT-safe by construction. The
+                 MinWidth values (220 / 320) stay the clamp, enforced in the drag handler. -->
+            <Grid Grid.Column="1">
+                <controls:ColumnGrip x:Name="PaneDivider" Width="10" Margin="-4.5 0 0 0"
+                                     Orientation="Horizontal"
+                                     DragDelta="PaneDivider_DragDelta"
+                                     ToolTipService.ToolTip="Drag to resize the tree and detail panes"
+                                     DoubleTapped="PaneDivider_DoubleTapped"/>
+            </Grid>
 
             <!-- Right: detail.
                  Deliberately NOT wrapped in a ScrollViewer. A ScrollViewer measures its child

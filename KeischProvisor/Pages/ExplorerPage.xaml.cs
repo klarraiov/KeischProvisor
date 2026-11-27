@@ -978,6 +978,42 @@ namespace KeischProvisor.Pages
 
         // ---- pane split -----------------------------------------------------
 
+        /// <summary>
+        /// Width the tree column had before the pane divider was first dragged, in pixels.
+        /// </summary>
+        private double _treeColumnWidth;
+
+        /// <summary>
+        /// Horizontal drag of the tree/detail divider.
+        ///
+        /// The tree column is pixel-sized and the detail column is star-sized, so only the tree
+        /// column is written; the detail pane keeps absorbing the remaining width. MinWidth on
+        /// both columns (220 / 320) stays the clamp, and the value is clamped here as well so a
+        /// fast drag cannot push the tree past what the detail pane needs to stay usable.
+        /// </summary>
+        private void PaneDivider_DragDelta(object sender, double delta)
+        {
+            if (_treeColumnWidth <= 0) _treeColumnWidth = TreeColumn.ActualWidth;
+            if (_treeColumnWidth <= 0) return;
+
+            // Leave the divider itself out of the budget, and never push the tree so wide that
+            // the detail pane drops below its own 320px floor.
+            double max = PaneRoot.ActualWidth - PaneDivider.ActualWidth - DetailColumn.MinWidth;
+            double next = Math.Clamp(_treeColumnWidth + delta, TreeColumn.MinWidth, Math.Max(TreeColumn.MinWidth, max));
+            if (Math.Abs(next - _treeColumnWidth) < 0.01) return;
+
+            _treeColumnWidth = next;
+            TreeColumn.Width = new GridLength(next, GridUnitType.Pixel);
+        }
+
+        /// <summary>Double-clicking the pane divider restores the default 380px tree column.</summary>
+        private void PaneDivider_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            _treeColumnWidth = 380;
+            TreeColumn.Width = new GridLength(380, GridUnitType.Pixel);
+            e.Handled = true;
+        }
+
         // The two tables share the detail pane's height through star-sized rows. The divider
         // converts its drag into a change of the Fields row's pixel height and lets the Hex row
         // (still a star) absorb the remainder, so the pair always fills the pane exactly.
